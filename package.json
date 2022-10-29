@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/ivpavici/abi-wan-kanabi/issues"
   },
-  "homepage": "https://github.com/ivpavici/abi-wan-kanabi#readme"
+  "homepage": "https://github.com/ivpavici/abi-wan-kanabi#readme",
+  "dependencies": {
+    "typescript": "^4.8.4"
+  }
 }
