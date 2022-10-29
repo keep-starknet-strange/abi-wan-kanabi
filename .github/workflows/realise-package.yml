@@ -1,4 +1,4 @@
-name: abi-wan-kanabi
+name: Node.js Package
 
 on:
   release:

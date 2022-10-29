@@ -22,7 +22,7 @@
   "homepage": "https://github.com/ivpavici/abi-wan-kanabi#readme",
 
   "publishConfig": {
-    "qperrot:registry": "https://npm.pkg.github.com"
+    "ivpavici:registry": "https://npm.pkg.github.com"
   },
 
   "dependencies": {
