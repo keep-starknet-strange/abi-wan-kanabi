@@ -23,5 +23,9 @@
 
   "publishConfig": {
     "qperrot:registry": "https://npm.pkg.github.com"
+  },
+
+  "dependencies": {
+    "typescript": "^4.8.4"
   }
 }
