@@ -1,3 +1,5 @@
+cache/
+starknet-artifacts/
 # Logs
 logs
 *.log

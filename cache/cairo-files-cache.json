@@ -1,7 +1,0 @@
-{
- "/Users/perrot-minnotquentin/abi-wan-kanabi/contracts/ERC20.cairo": {
-  "contentHash": "e4511163b9af7a8652572d293f094b42e56cb828903e094d413228ba1b8e199a",
-  "outputPath": "/Users/perrot-minnotquentin/abi-wan-kanabi/starknet-artifacts/contracts/ERC20.cairo/ERC20.json",
-  "abiPath": "/Users/perrot-minnotquentin/abi-wan-kanabi/starknet-artifacts/contracts/ERC20.cairo/ERC20_abi.json"
- }
-}
