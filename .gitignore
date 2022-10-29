@@ -1,3 +1,6 @@
+starknet-artifacts/
+cache/
+package-lock.ts
 # Logs
 logs
 *.log
