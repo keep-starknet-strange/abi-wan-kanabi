@@ -1,2 +1,2 @@
 # abi-wan-kanabi
-Abi Typescript parser for Cairo smart contracts, based on wagmi abitype.
+Abi TypeScript parser for Cairo smart contracts, based on [wagmi/abitype](https://github.com/wagmi-dev/abitype).
