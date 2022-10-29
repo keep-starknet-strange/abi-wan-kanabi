@@ -20,6 +20,11 @@
     "url": "https://github.com/ivpavici/abi-wan-kanabi/issues"
   },
   "homepage": "https://github.com/ivpavici/abi-wan-kanabi#readme",
+
+  "publishConfig": {
+    "ivpavici:registry": "https://npm.pkg.github.com"
+  },
+
   "dependencies": {
     "typescript": "^4.8.4"
   }
