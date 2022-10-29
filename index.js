@@ -1,8 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function call(abi, f, args) {
-    throw new Error('todo');
-}
 const ABI = [
     {
         "members": [
@@ -90,16 +87,7 @@ const ABI = [
         "type": "function"
     },
 ];
-const xxx = () => { return { low: 0, high: 0 }; };
-let a;
-let test;
-let c = test.demo();
-const Regions = {
-    "": true,
-    "eu-west-1": true,
-    "eu-east-1": true,
-    "us-west-1": true,
-    "ap-southeast-1": true,
-    "ap-east-1": true
-};
-const xxxx = call(ABI, 'balanceOf', [123]);
+function call(abi, f, args) {
+    throw new Error('todo');
+}
+const [balance] = call(ABI, 'balanceOf', [123]);
