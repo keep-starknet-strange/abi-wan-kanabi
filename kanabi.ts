@@ -53,10 +53,22 @@ type _BuildArgs<TAbi extends Abi, TAbiParam extends readonly AbiParameter[],
 
 export type FunctionArgs<
     TAbi extends Abi, TFunctionName extends ExtractAbiFunctionName<TAbi>> =
+    ExtractAbiFunction<TAbi, TFunctionName>['inputs'] extends readonly[] ?
+    [] :
+    _BuildArgs<
+        TAbi, ExtractAbiFunction<TAbi, TFunctionName>['inputs'],
+        []> extends [infer T] ?
+    T :
     _BuildArgs<TAbi, ExtractAbiFunction<TAbi, TFunctionName>['inputs'], []>;
 
 export type FunctionRet<
     TAbi extends Abi, TFunctionName extends ExtractAbiFunctionName<TAbi>> =
+    ExtractAbiFunction<TAbi, TFunctionName>['outputs'] extends readonly[] ?
+    void :
+    _BuildArgs<
+        TAbi, ExtractAbiFunction<TAbi, TFunctionName>['outputs'],
+        []> extends [infer T] ?
+    T :
     _BuildArgs<TAbi, ExtractAbiFunction<TAbi, TFunctionName>['outputs'], []>;
 
 export type ExtractAbiFunctions<TAbi extends Abi> =
