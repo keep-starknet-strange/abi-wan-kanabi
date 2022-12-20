@@ -25,14 +25,15 @@ const ABI = [
   {
     'inputs': [],
     'name': 'fun1',
-    'outputs': [{'name': 'par1', 'type': 'felt'}],
+    'outputs':
+        [{'name': 'par1', 'type': 'felt'}, {'name': 'par2', 'type': 'Uint256'}],
     'stateMutability': 'view',
     'type': 'function'
   },
   {
     'inputs': [{'name': 'x', 'type': 'felt'}, {'name': 'y', 'type': 'felt'}],
     'name': 'fun2',
-    'outputs': [{'name': 'par1', 'type': 'felt'}],
+    'outputs': [],
     'stateMutability': 'view',
     'type': 'function'
   },
@@ -45,4 +46,9 @@ const ABI = [
   }
 ] as const;
 
-const [balance] = call(ABI, 'balanceOf', [123]);
+// fun1 takes no input and returns [felt, Uint256]
+const ret1 = call(ABI, 'fun1', []);
+// fun2 takes two felts as input and has no output
+const ret2 = call(ABI, 'fun2', [123, 321]);
+// balanceOf takes one felt as input and returns a Uint256
+const balance = call(ABI, 'balanceOf', 123);
