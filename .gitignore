@@ -108,3 +108,6 @@ dist
 .npmrc
 
 *.js
+
+# local folder for tests
+local
