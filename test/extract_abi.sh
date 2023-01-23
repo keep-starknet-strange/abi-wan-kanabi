@@ -10,7 +10,5 @@
 for f in ${@:1:$#-1}; do
     basename=${f##*/}
     name=${basename%.*}
-    echo $basename
-    echo $name
-    echo -E "declare const abi: $(cat $f) as const; export default abi;" > ${name}.d.ts
+    echo -E "declare const abi: $(cat $f) as const; export default abi;" > ${@: -1}/${name}.d.ts
 done;
