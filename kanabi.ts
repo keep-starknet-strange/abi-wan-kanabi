@@ -38,15 +38,11 @@ type AbiFunction = {
   state_mutability: AbiStateMutability,
 };
 
-
-
 type AbiEvent = {
   name: string,
   inputs: readonly AbiParameter[],
   type: 'event',
 };
-
-
 
 type AbiMember = {
   name: string,
