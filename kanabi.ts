@@ -255,3 +255,29 @@ export type StringToPrimitiveType<
   : // We should never have a type T where ExtractAbiStruct<TAbi, T>
     // return something different than a struct
     never
+
+type UnionToIntersection<Union> = (
+  Union extends unknown ? (arg: Union) => unknown : never
+) extends (arg: infer R) => unknown
+  ? R
+  : never;
+
+export type ContractFunctions<TAbi extends Abi> = UnionToIntersection<
+  {
+    [K in keyof TAbi]: TAbi[K] extends infer TAbiFunction extends AbiFunction & {
+      type: 'function';
+    }
+      ? {
+          [K2 in TAbiFunction['name']]: (
+            ...args: TAbiFunction['inputs'] extends infer TInput extends readonly AbiParameter[]
+              ? {
+                  [K3 in keyof TInput]: TInput[K3] extends infer TInputParam extends AbiParameter
+                    ? StringToPrimitiveType<TAbi, TInputParam["type"]>
+                    : never;
+                }
+              : never
+          ) => Promise<FunctionRet<TAbi, TAbiFunction['name']>>;
+        }
+      : never;
+  }[number]
+>;
