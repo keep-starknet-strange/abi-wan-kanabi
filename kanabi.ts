@@ -111,3 +111,29 @@ export type AbiParameterToPrimitiveType<
           AbiParameterToPrimitiveType<TAbi, Member>
     } :
     unknown;
+
+type UnionToIntersection<Union> = (
+  Union extends unknown ? (arg: Union) => unknown : never
+) extends (arg: infer R) => unknown
+  ? R
+  : never;
+            
+export type ContractFunctions<TAbi extends Abi> = UnionToIntersection<
+  {
+    [K in keyof TAbi]: TAbi[K] extends infer TAbiFunction extends AbiFunction & {
+      type: 'function';
+    }
+      ? {
+          [K2 in TAbiFunction['name']]: (
+            ...args: TAbiFunction['inputs'] extends infer TInput extends readonly AbiParameter[]
+              ? {
+                  [K3 in keyof TInput]: TInput[K3] extends infer TInputParam extends AbiParameter
+                    ? AbiParameterToPrimitiveType<TAbi, TInputParam>
+                    : never;
+                }
+              : never
+          ) => Promise<FunctionRet<TAbi, TAbiFunction['name']>>;
+        }
+      : never;
+  }[number]
+>;
