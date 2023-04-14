@@ -1,54 +1,154 @@
 import {call} from '../index';
-// import abi from './abi_demo.json';
 
 const ABI = [
   {
-    'members': [
-      {'name': 'low', 'offset': 0, 'type': 'felt'},
-      {'name': 'high', 'offset': 1, 'type': 'felt'}
-    ],
-    'name': 'Uint256',
-    'size': 2,
-    'type': 'struct'
-  },
-  {
-    'inputs': [
-      {'name': 'par1', 'type': 'felt'}, {'name': 'symbol', 'type': 'felt'},
-      {'name': 'decimals', 'type': 'felt'},
-      {'name': 'initial_supply', 'type': 'Uint256'},
-      {'name': 'recipient', 'type': 'felt'}
-    ],
+    'type': 'function',
     'name': 'constructor',
-    'outputs': [],
-    'type': 'constructor'
+    'inputs': [
+      {'name': 'name_', 'ty': 'core::felt'},
+      {'name': 'symbol_', 'ty': 'core::felt'},
+      {'name': 'decimals_', 'ty': 'core::integer::u8'},
+      {'name': 'initial_supply', 'ty': 'core::integer::u256'},
+      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
   },
   {
+    'type': 'function',
+    'name': 'get_name',
     'inputs': [],
-    'name': 'fun1',
-    'outputs':
-        [{'name': 'par1', 'type': 'felt'}, {'name': 'par2', 'type': 'Uint256'}],
-    'stateMutability': 'view',
-    'type': 'function'
+    'output_ty': 'core::felt',
+    'state_mutability': 'view'
   },
   {
-    'inputs': [{'name': 'x', 'type': 'felt'}, {'name': 'y', 'type': 'felt'}],
-    'name': 'fun2',
-    'outputs': [],
-    'stateMutability': 'view',
-    'type': 'function'
+    'type': 'function',
+    'name': 'get_symbol',
+    'inputs': [],
+    'output_ty': 'core::felt',
+    'state_mutability': 'view'
   },
   {
-    'inputs': [{'name': 'account', 'type': 'felt'}],
-    'name': 'balanceOf',
-    'outputs': [{'name': 'balance', 'type': 'Uint256'}],
-    'stateMutability': 'view',
-    'type': 'function'
+    'type': 'function',
+    'name': 'get_decimals',
+    'inputs': [],
+    'output_ty': 'core::integer::u8',
+    'state_mutability': 'view'
+  },
+  {
+    'type': 'function',
+    'name': 'get_total_supply',
+    'inputs': [],
+    'output_ty': 'core::integer::u256',
+    'state_mutability': 'view'
+  },
+  {
+    'type': 'function',
+    'name': 'balance_of',
+    'inputs': [{'name': 'account', 'ty': 'core::starknet::ContractAddress'}],
+    'output_ty': 'core::integer::u256',
+    'state_mutability': 'view'
+  },
+  {
+    'type': 'function',
+    'name': 'allowance',
+    'inputs': [
+      {'name': 'owner', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'}
+    ],
+    'output_ty': 'core::integer::u256',
+    'state_mutability': 'view'
+  },
+  {
+    'type': 'function',
+    'name': 'transfer',
+    'inputs': [
+      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'amount', 'ty': 'core::integer::u256'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'transfer_from',
+    'inputs': [
+      {'name': 'sender', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'amount', 'ty': 'core::integer::u256'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'approve',
+    'inputs': [
+      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'amount', 'ty': 'core::integer::u256'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'increase_allowance',
+    'inputs': [
+      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'added_value', 'ty': 'core::integer::u256'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'decrease_allowance',
+    'inputs': [
+      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'subtracted_value', 'ty': 'core::integer::u256'}
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'event',
+    'name': 'Transfer',
+    'inputs': [
+      {'name': 'from', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'to', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'value', 'ty': 'core::integer::u256'}
+    ]
+  },
+  {
+    'type': 'event',
+    'name': 'Approval',
+    'inputs': [
+      {'name': 'owner', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
+      {'name': 'value', 'ty': 'core::integer::u256'}
+    ]
   }
 ] as const;
 
-// fun1 takes no input and returns [felt, Uint256]
-const ret1 = call(ABI, 'fun1', []);
-// fun2 takes two felts as input and has no output
-const ret2 = call(ABI, 'fun2', [123, 321]);
-// balanceOf takes one felt as input and returns a Uint256
-const balance = call(ABI, 'balanceOf', 123);
+// inputs: felt, felt, u8, u256, ContractAddress | output: ()
+const ret1 =
+    call(ABI, 'constructor', [BigInt(5), BigInt(2), 5, BigInt(1), BigInt(2)]);
+
+// inputs: [] | output: felt
+const ret2 = call(ABI, 'get_name', []);
+const ret3 = call(ABI, 'get_symbol', []);
+// inputs: [] | output: u8
+const ret4 = call(ABI, 'get_decimals', []);
+// inputs: [] | output: u256
+const ret5 = call(ABI, 'get_total_supply', []);
+// inputs: ContractAddress, ContractAddress | output: u256
+const ret6 = call(ABI, 'balance_of', BigInt(5));
+// inputs: ContractAddress, ContractAddress, u256 | output: ()
+const ret9 = call(ABI, 'transfer_from', [BigInt(1), BigInt(2), BigInt(3)]);
+// inputs: ContractAddress, u256 | output: ()
+const ret8 = call(ABI, 'transfer', [BigInt(1), BigInt(2)]);
+const ret10 = call(ABI, 'approve', [BigInt(1), BigInt(2)]);
+const ret11 = call(ABI, 'increase_allowance', [BigInt(1), BigInt(2)]);
+const ret12 = call(ABI, 'decrease_allowance', [BigInt(1), BigInt(2)]);
+// inputs: ContractAddress, ContractAddress | output: u256
+const ret7 = call(ABI, 'allowance', [BigInt(1), BigInt(2)]);
