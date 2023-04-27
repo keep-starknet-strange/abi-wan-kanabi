@@ -1,6 +1,6 @@
 import {call} from '../index';
 
-const ABI = [
+export const ABI = [
   {
     'type': 'function',
     'name': 'constructor',
