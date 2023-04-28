@@ -132,7 +132,7 @@ const ABI = [
 
 // inputs: felt, felt, u8, u256, ContractAddress | output: ()
 const ret1 =
-    call(ABI, 'constructor', [BigInt(5), BigInt(2), 5, BigInt(1), BigInt(2)]);
+    call(ABI, 'constructor', [5n, 2n, 4, 2n, 1n]);
 
 // inputs: [] | output: felt
 const ret2 = call(ABI, 'get_name', []);
@@ -142,13 +142,13 @@ const ret4 = call(ABI, 'get_decimals', []);
 // inputs: [] | output: u256
 const ret5 = call(ABI, 'get_total_supply', []);
 // inputs: ContractAddress, ContractAddress | output: u256
-const ret6 = call(ABI, 'balance_of', BigInt(5));
+const ret6 = call(ABI, 'balance_of', 5n);
 // inputs: ContractAddress, ContractAddress, u256 | output: ()
-const ret9 = call(ABI, 'transfer_from', [BigInt(1), BigInt(2), BigInt(3)]);
+const ret9 = call(ABI, 'transfer_from', [1n, 2n, 3n]);
 // inputs: ContractAddress, u256 | output: ()
-const ret8 = call(ABI, 'transfer', [BigInt(1), BigInt(2)]);
-const ret10 = call(ABI, 'approve', [BigInt(1), BigInt(2)]);
-const ret11 = call(ABI, 'increase_allowance', [BigInt(1), BigInt(2)]);
-const ret12 = call(ABI, 'decrease_allowance', [BigInt(1), BigInt(2)]);
+const ret8 = call(ABI, 'transfer', [1n, 2n]);
+const ret10 = call(ABI, 'approve', [1n, 2n]);
+const ret11 = call(ABI, 'increase_allowance', [1n, 2n]);
+const ret12 = call(ABI, 'decrease_allowance', [1n, 2n]);
 // inputs: ContractAddress, ContractAddress | output: u256
-const ret7 = call(ABI, 'allowance', [BigInt(1), BigInt(2)]);
+const ret7 = call(ABI, 'allowance', [1n, 2n]);

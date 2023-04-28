@@ -17,15 +17,13 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ivpavici/abi-wan-kanabi/issues"
+    "url": "https://github.com/keep-starknet-strange/abi-wan-kanabi/issues"
   },
-  "homepage": "https://github.com/ivpavici/abi-wan-kanabi#readme",
-
+  "homepage": "https://github.com/keep-starknet-strange/abi-wan-kanabi#readme",
   "publishConfig": {
     "ivpavici:registry": "https://npm.pkg.github.com"
   },
-
   "dependencies": {
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.5"
   }
 }
