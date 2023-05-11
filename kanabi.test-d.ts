@@ -5,7 +5,6 @@ import {
     CairoAddress,
     CairoFunction,
     CairoVoid,
-    CairoOption,
     CairoTuple,
     FunctionArgs,
     FunctionRet,
@@ -38,7 +37,6 @@ test("Cairo Types", () => {
     assertType<CairoAddress>("core::starknet::ContractAddress");
     assertType<CairoFunction>("function");
     assertType<CairoVoid>("()");
-    assertType<CairoOption>("core::option::Option<T>");
     assertType<CairoTuple>("()");
     assertType<CairoTuple>("(1)");
     assertType<CairoTuple>("(1, 2n)");
@@ -67,8 +65,6 @@ test("Cairo Types Errors", () => {
     assertType<CairoFunction>("core::integer::u8");
     // @ts-expect-error
     assertType<CairoVoid>("function");
-    // @ts-expect-error
-    assertType<CairoOption>("()");
     // @ts-expect-error
     assertType<CairoTuple>("(");
 })
@@ -212,7 +208,12 @@ test("ExtractAbiFunctionName", () => {
         | "transfer_from"
         | "approve"
         | "increase_allowance"
-        | "decrease_allowance";
+        | "decrease_allowance"
+        | "test_option"
+        | "test_array"
+        | "test_array_of_options"
+        | "test_array_of_options_of_arrays";
+
     expectTypeOf<ExtractAbiFunctionNames<TAbi>>().toEqualTypeOf<Expected>();
 })
 
@@ -225,15 +226,8 @@ test("AbiTypeToPrimitiveType", () => {
     assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue);
     assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(voidValue);
 
-    // Option and Tuple aren't yet implemented, it always returns any
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoOption>>(intValue);
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoOption>>(bigIntValue);
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoOption>>(voidValue);
-
+    // Tuple isn't implemented yet, it always returns any
     assertType<AbiTypeToPrimitiveType<TAbi, CairoTuple>>(intValue);
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoOption>>(bigIntValue);
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoOption>>(voidValue);
-
 })
 
 test("AbiTypeToPrimitiveType Errors", () => {
@@ -262,14 +256,8 @@ test("AbiParameterToPrimitiveType", () => {
     assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFunction, name: 'x'}>>(intValue);
     assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoVoid, name: 'x'}>>(voidValue);
 
-    // Option and Tuple aren't yet implemented, it always returns any
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoOption, name: 'x'}>>(intValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoOption, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoOption, name: 'x'}>>(voidValue);
-
+    // Tuple ins't yet implemented, it always returns any
     assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoTuple, name: 'x'}>>(intValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoOption, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoOption, name: 'x'}>>(voidValue);
 })
 
 test("AbiParameterToPrimitiveType Errors", () => {

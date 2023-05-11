@@ -4,7 +4,6 @@ type BigMBits = 64|128|256
 export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
 export type CairoAddress = 'core::starknet::ContractAddress'
-export type CairoOption = 'core::option::Option<T>'
 export type CairoFunction = 'function';
 export type CairoVoid = '()';
 
@@ -27,7 +26,16 @@ type _BuildTuple<
 export type CairoTuple = _BuildTuple;
 
 type AbiType =
-    CairoFelt|CairoFunction|CairoTuple|CairoInt|CairoBigInt|CairoAddress|CairoOption;
+    CairoFelt|CairoFunction|CairoTuple|CairoInt|CairoBigInt|CairoAddress;
+
+// We have to use string to support nesting
+type CairoOptionGeneric<T extends string> = `core::option::Option<${T}>`;
+type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>`;
+type CairoGeneric<T extends string> = CairoOptionGeneric<T> | CairoArrayGeneric<T>
+
+// Note that Option<Option<number>> = T | undefined | undefined which is the same
+// as Option<Option<number>, is this what we want for Option ?
+export type Option<T> = T | undefined
 
 type ResolvedAbiType = AbiType;
 
@@ -146,13 +154,24 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 } & {
   [_ in CairoAddress]: bigint
 } & {
-  [_ in CairoOption]: any  // TODO: implement options with generics
-} & {
   [_ in CairoVoid]: void
 }
 
 export type AbiTypeToPrimitiveType<TAbi extends Abi, TAbiType extends AbiType> =
     PrimitiveTypeLookup<TAbi>[TAbiType];
+
+
+export type GenericTypeToPrimitiveType<TAbi extends Abi, G extends string> =
+  G extends CairoOptionGeneric<infer T>
+    ? T extends AbiType
+      ? Option<AbiTypeToPrimitiveType<TAbi, T>>
+      : Option<GenericTypeToPrimitiveType<TAbi, T>>
+    : G extends CairoArrayGeneric<infer T>
+      ? T extends AbiType
+        ? AbiTypeToPrimitiveType<TAbi, T>[]
+        : GenericTypeToPrimitiveType<TAbi, T>[]
+    : unknown;
+
 
 // Question: AbiParameterToPrimitiveType<TAbi, {ty: "MissingStruct", name: 'x'}
 //           doesn't raise an error although there is no struct named
@@ -163,11 +182,13 @@ export type AbiParameterToPrimitiveType<
 > =
   TAbiParameter['ty'] extends AbiType
     ? AbiTypeToPrimitiveType<TAbi, TAbiParameter['ty']>
-    : ExtractAbiStruct<TAbi, TAbiParameter['ty']> extends {
+    : TAbiParameter['ty'] extends CairoGeneric<infer _>
+      ? GenericTypeToPrimitiveType<TAbi, TAbiParameter['ty']>
+      : ExtractAbiStruct<TAbi, TAbiParameter['ty']> extends {
         type: 'struct', members: infer TMembers extends readonly AbiMember[]
       }
-      ? {
+        ? {
           [Member in TMembers[number] as Member['name']]:
             AbiParameterToPrimitiveType<TAbi, Member>
         }
-      : unknown;
+        : unknown;
