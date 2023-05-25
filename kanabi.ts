@@ -1,17 +1,18 @@
-type Felt = 'core::felt';
+export type CairoFelt = 'core::felt';
 type MBits = 8|16|32
 type BigMBits = 64|128|256
-type cairoInt = `${'core::integer::u'}${MBits}`
-type CairoBigInt = `${'core::integer::u'}${BigMBits}`
-type CairoAddress = 'core::starknet::ContractAddress'
-type Option = 'core::option::Option<T>'
-type CairoFunction = 'function';
-type CairoVoid = '()';
+export type CairoInt = `${'core::integer::u'}${MBits}`
+export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
+export type CairoAddress = 'core::starknet::ContractAddress'
+export type CairoOption = 'core::option::Option<T>'
+export type CairoFunction = 'function';
+export type CairoVoid = '()';
 
 
 /// Implementation of tuples
 type MAX_TUPLE_SIZE = 3;
 
+// Question: why do we need both R and A here ?
 type _BuildTuple<
   R extends unknown = never,
   A extends string = '',
@@ -23,10 +24,10 @@ type _BuildTuple<
       ? _BuildTuple<R, `(${string}`, [...D, 1]>
       : _BuildTuple<`${A})`|R, `${A}, ${string}`, [...D, 1]>;
 
-type CairoTuple = _BuildTuple;
+export type CairoTuple = _BuildTuple;
 
 type AbiType =
-    Felt|CairoFunction|CairoTuple|cairoInt|CairoBigInt|CairoAddress|Option;
+    CairoFelt|CairoFunction|CairoTuple|CairoInt|CairoBigInt|CairoAddress|CairoOption;
 
 type ResolvedAbiType = AbiType;
 
@@ -89,7 +90,7 @@ type _BuildOutput<
 
 export type FunctionArgs<
   TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionName<TAbi>
+  TFunctionName extends ExtractAbiFunctionNames<TAbi>
 > =
   ExtractAbiFunction<TAbi, TFunctionName>['inputs'] extends readonly[]
     ? []
@@ -103,19 +104,19 @@ export type FunctionArgs<
 
 export type FunctionRet<
   TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionName<TAbi>
+  TFunctionName extends ExtractAbiFunctionNames<TAbi>
 > =
   _BuildOutput<TAbi, ExtractAbiFunction<TAbi, TFunctionName>['output_ty']>;
 
 export type ExtractAbiFunctions<TAbi extends Abi> =
     Extract<TAbi[number], {type: 'function'}>;
 
-export type ExtractAbiFunctionName<TAbi extends Abi> =
+export type ExtractAbiFunctionNames<TAbi extends Abi> =
     ExtractAbiFunctions<TAbi>['name'];
 
 export type ExtractAbiFunction<
   TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionName<TAbi>
+  TFunctionName extends ExtractAbiFunctionNames<TAbi>
 > =
   Extract<ExtractAbiFunctions<TAbi>, {name: TFunctionName}>;
 
@@ -131,20 +132,21 @@ export type ExtractAbiStruct<
 > =
   Extract<ExtractAbiStructs<TAbi>, {name: TStructName}>;
 
+// Question: why do we need TAbi extends Abi here, it's not used ?
 type PrimitiveTypeLookup<TAbi extends Abi> = {
-  [_ in Felt]: bigint
+  [_ in CairoFelt]: bigint
 } & {
   [_ in CairoFunction]: number
 } & {
-  [_ in CairoTuple]: [number, number]  // TODO: implement tuples
+  [_ in CairoTuple]: any  // TODO: implement tuples
 } & {
-  [_ in cairoInt]: number | bigint
+  [_ in CairoInt]: number | bigint // Question: Why not just number ?
 } & {
   [_ in CairoBigInt]: bigint
 } & {
   [_ in CairoAddress]: bigint
 } & {
-  [_ in Option]: any  // TODO: implement options with generics
+  [_ in CairoOption]: any  // TODO: implement options with generics
 } & {
   [_ in CairoVoid]: void
 }
@@ -152,6 +154,9 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 export type AbiTypeToPrimitiveType<TAbi extends Abi, TAbiType extends AbiType> =
     PrimitiveTypeLookup<TAbi>[TAbiType];
 
+// Question: AbiParameterToPrimitiveType<TAbi, {ty: "MissingStruct", name: 'x'}
+//           doesn't raise an error although there is no struct named
+//           'MissingStruct' defined in the ABI, is this the expected behavior?
 export type AbiParameterToPrimitiveType<
   TAbi extends Abi,
   TAbiParameter extends AbiParameter

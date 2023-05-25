@@ -1,9 +1,9 @@
-import {Abi, ExtractAbiFunctionName, FunctionArgs, FunctionRet} from './kanabi';
+import {Abi, ExtractAbiFunctionNames, FunctionArgs, FunctionRet} from './kanabi';
 
 export function call<
   TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionName<TAbi>
->( 
+  TFunctionName extends ExtractAbiFunctionNames<TAbi>
+>(
   abi: TAbi,
   f: TFunctionName,
   args: FunctionArgs<TAbi, TFunctionName>
