@@ -2,6 +2,7 @@
 import * as fs from 'fs-extra';
 import * as yargs from 'yargs';
 
+
 const argv = yargs
   .option('input', {
     alias: 'i',
@@ -17,7 +18,7 @@ const argv = yargs
   })
   .help()
   .alias('help', 'h')
-  .argv;
+  .parseSync();
 
 async function run() {
   const json: {abi: object} = await fs.readJson(argv.input);
