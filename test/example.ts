@@ -111,6 +111,42 @@ export const ABI = [
     'state_mutability': 'external'
   },
   {
+    'type': 'function',
+    'name': 'test_option',
+    'inputs': [
+      {'name': 'option', 'ty': 'core::option::Option<core::option::Option<core::integer::u8>>'},
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'test_array',
+    'inputs': [
+      {'name': 'option', 'ty': 'core::array::Array::<core::integer::u8>'},
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'test_array_of_options',
+    'inputs': [
+      {'name': 'option', 'ty': 'core::array::Array::<core::option::Option<core::integer::u8>>'},
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
+    'type': 'function',
+    'name': 'test_array_of_options_of_arrays',
+    'inputs': [
+      {'name': 'option', 'ty': 'core::array::Array::<core::option::Option<core::array::Array::<core::integer::u8>>>'},
+    ],
+    'output_ty': '()',
+    'state_mutability': 'external'
+  },
+  {
     'type': 'event',
     'name': 'Transfer',
     'inputs': [
@@ -129,6 +165,8 @@ export const ABI = [
     ]
   }
 ] as const;
+
+// Setting output to core::option::Option<()> causes type check errors everywhere
 
 // inputs: felt, felt, u8, u256, ContractAddress | output: ()
 const ret1 =
@@ -152,3 +190,14 @@ const ret11 = call(ABI, 'increase_allowance', [1n, 2n]);
 const ret12 = call(ABI, 'decrease_allowance', [1n, 2n]);
 // inputs: ContractAddress, ContractAddress | output: u256
 const ret7 = call(ABI, 'allowance', [1n, 2n]);
+
+const ret13 = call(ABI, 'test_option', 5);
+const ret14 = call(ABI, 'test_option', undefined);
+
+const ret15 = call(ABI, 'test_array', [1, 2, 3, 4]);
+const ret16 = call(ABI, 'test_array', [1n, 2n, 3n]);
+const ret17 = call(ABI, 'test_array', [1n, 2n, 3]);
+
+const ret18 = call(ABI, "test_array_of_options", [1, 2, undefined, undefined, 3]);
+
+const ret19 = call(ABI, "test_array_of_options_of_arrays", [[1, 2], undefined, [5, 6]])
