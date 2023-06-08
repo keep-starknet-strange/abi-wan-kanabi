@@ -21,8 +21,8 @@ const argv = yargs
   .parseSync();
 
 async function run() {
-  const json: {abi: object} = await fs.readJson(argv.input);
-  const content = `export const ABI = ${JSON.stringify({"abi": json.abi}, null, 2)};\n`;
+  const json: { abi: object } = await fs.readJson(argv.input);
+  const content = `export const ABI = ${JSON.stringify(json.abi, null, 2)} as const;\n`;
   await fs.writeFile(argv.output, content);
 }
 
