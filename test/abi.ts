@@ -1,10 +1,12 @@
+import { call } from "../index";
+
 export const ABI = [
   {
     "type": "function",
-    "name": "fn_felt",
+    "name": "say_hello",
     "inputs": [
       {
-        "name": "felt",
+        "name": "message",
         "type": "core::felt252"
       }
     ],
@@ -13,14 +15,14 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_felt_u8_bool",
+    "name": "say_hello_again",
     "inputs": [
       {
-        "name": "felt",
+        "name": "message",
         "type": "core::felt252"
       },
       {
-        "name": "int8",
+        "name": "n",
         "type": "core::integer::u8"
       },
       {
@@ -33,34 +35,34 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_felt_u8_bool_out_address_felt_u8_bool",
+    "name": "say_hello_view",
     "inputs": [
       {
-        "name": "felt",
+        "name": "message",
         "type": "core::felt252"
       },
       {
-        "name": "int8",
+        "name": "n",
         "type": "core::integer::u8"
       },
       {
-        "name": "boolean",
+        "name": "b",
         "type": "core::bool"
       }
     ],
     "outputs": [
       {
-        "type": "(core::starknet::contract_address::ContractAddress, core::felt252, core::integer::u8, core::bool)"
+        "type": "(core::starknet::contract_address::ContractAddress, core::felt252, core::integer::u8, core::bool, core::array::Array::<hello_starknet::hello_starknet::HelloStarknet::TestStruct>)"
       }
     ],
     "state_mutability": "view"
   },
   {
     "type": "function",
-    "name": "fn_felt_out_felt",
+    "name": "func",
     "inputs": [
       {
-        "name": "felt",
+        "name": "message",
         "type": "core::felt252"
       }
     ],
@@ -73,7 +75,7 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_out_simple_option",
+    "name": "simple_option",
     "inputs": [],
     "outputs": [
       {
@@ -84,7 +86,7 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_out_nested_option",
+    "name": "nested_option",
     "inputs": [],
     "outputs": [
       {
@@ -95,64 +97,11 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_simple_array",
+    "name": "simple_array",
     "inputs": [
       {
         "name": "arg",
         "type": "core::array::Array::<core::integer::u8>"
-      }
-    ],
-    "outputs": [],
-    "state_mutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "fn_out_simple_array",
-    "inputs": [],
-    "outputs": [
-      {
-        "type": "core::array::Array::<core::integer::u8>"
-      }
-    ],
-    "state_mutability": "view"
-  },
-  {
-    "type": "struct",
-    "name": "example::example::HelloStarknet::TestStruct",
-    "members": [
-      {
-        "name": "integer",
-        "type": "core::integer::u128"
-      },
-      {
-        "name": "felt",
-        "type": "core::felt252"
-      },
-      {
-        "name": "tuple",
-        "type": "(core::integer::u32, core::integer::u32)"
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": "fn_struct_array",
-    "inputs": [
-      {
-        "name": "arg",
-        "type": "core::array::Array::<example::example::HelloStarknet::TestStruct>"
-      }
-    ],
-    "outputs": [],
-    "state_mutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "fn_struct",
-    "inputs": [
-      {
-        "name": "arg",
-        "type": "example::example::HelloStarknet::TestStruct"
       }
     ],
     "outputs": [],
@@ -160,7 +109,7 @@ export const ABI = [
   },
   {
     "type": "enum",
-    "name": "example::example::HelloStarknet::TestEnum",
+    "name": "hello_starknet::hello_starknet::HelloStarknet::TestEnum",
     "variants": [
       {
         "name": "Integer",
@@ -178,11 +127,11 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_enum",
+    "name": "test_enum",
     "inputs": [
       {
         "name": "arg",
-        "type": "example::example::HelloStarknet::TestEnum"
+        "type": "hello_starknet::hello_starknet::HelloStarknet::TestEnum"
       }
     ],
     "outputs": [],
@@ -190,11 +139,45 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_enum_array",
+    "name": "test_enum_array",
     "inputs": [
       {
         "name": "arg",
-        "type": "core::array::Array::<example::example::HelloStarknet::TestEnum>"
+        "type": "core::array::Array::<hello_starknet::hello_starknet::HelloStarknet::TestEnum>"
+      }
+    ],
+    "outputs": [],
+    "state_mutability": "view"
+  },
+  {
+    "type": "struct",
+    "name": "hello_starknet::hello_starknet::HelloStarknet::TestStruct",
+    "members": [
+      {
+        "name": "integer",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "felt",
+        "type": "core::felt252"
+      },
+      {
+        "name": "felt2",
+        "type": "core::felt252"
+      },
+      {
+        "name": "tuple",
+        "type": "(core::integer::u32, core::integer::u32)"
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "test_struct_array",
+    "inputs": [
+      {
+        "name": "arg",
+        "type": "core::array::Array::<hello_starknet::hello_starknet::HelloStarknet::TestStruct>"
       }
     ],
     "outputs": [],
@@ -202,18 +185,19 @@ export const ABI = [
   },
   {
     "type": "function",
-    "name": "fn_out_enum_array",
-    "inputs": [],
-    "outputs": [
+    "name": "test_struct",
+    "inputs": [
       {
-        "type": "core::array::Array::<example::example::HelloStarknet::TestEnum>"
+        "name": "arg",
+        "type": "hello_starknet::hello_starknet::HelloStarknet::TestStruct"
       }
     ],
+    "outputs": [],
     "state_mutability": "view"
   },
   {
     "type": "event",
-    "name": "TestEvent",
+    "name": "Hello",
     "inputs": [
       {
         "name": "from",
@@ -224,5 +208,17 @@ export const ABI = [
         "type": "core::felt252"
       }
     ]
+  },
+  {
+    "type": "function",
+    "name": "test_unknown_types",
+    "inputs": [
+      {
+        "name": "arg",
+        "type": "no_type_is_here"
+      }
+    ],
+    "outputs": [{ "type": "another_no_type" }],
+    "state_mutability": "view"
   }
 ] as const;

@@ -11,11 +11,11 @@ import {
     ExtractAbiFunction,
     ExtractAbiFunctionNames,
     AbiTypeToPrimitiveType,
-    AbiParameterToPrimitiveType,
+    StringToPrimitiveType,
     ExtractAbiStruct
-} from "./kanabi";
+} from "../kanabi";
 import { test, expectTypeOf, assertType } from "vitest";
-import { ABI } from "./test/example";
+import { ABI } from "./example";
 
 type TAbi = typeof ABI;
 
@@ -27,14 +27,14 @@ const intValue = 10;
 const emptyArray: [] = [];
 
 test("Cairo Types", () => {
-    assertType<CairoFelt>("core::felt");
+    assertType<CairoFelt>("core::felt252");
     assertType<CairoInt>("core::integer::u8");
     assertType<CairoInt>("core::integer::u16");
     assertType<CairoInt>("core::integer::u32");
     assertType<CairoBigInt>("core::integer::u64");
     assertType<CairoBigInt>("core::integer::u128");
     assertType<CairoBigInt>("core::integer::u256");
-    assertType<CairoAddress>("core::starknet::ContractAddress");
+    assertType<CairoAddress>("core::starknet::contract_address::ContractAddress");
     assertType<CairoFunction>("function");
     assertType<CairoVoid>("()");
     assertType<CairoTuple>("()");
@@ -245,33 +245,45 @@ test("AbiTypeToPrimitiveType Errors", () => {
     assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(intValue);
 })
 
-test("AbiParameterToPrimitiveType", () => {
+test("StringToPrimitiveType", () => {
     // TODO: add tests for struct AbiParameter
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFelt, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFelt, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoInt, name: 'x'}>>(intValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoInt, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoBigInt, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoAddress, name: 'x'}>>(bigIntValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFunction, name: 'x'}>>(intValue);
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoVoid, name: 'x'}>>(voidValue);
+    assertType<StringToPrimitiveType<TAbi, CairoFelt>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoFelt>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoInt>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoInt>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoBigInt>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoAddress>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoFunction>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoVoid>>(voidValue);
 
     // Tuple ins't yet implemented, it always returns any
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoTuple, name: 'x'}>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoTuple>>(intValue);
 })
 
-test("AbiParameterToPrimitiveType Errors", () => {
+test("StringToPrimitiveType Errors", () => {
     // TODO: add tests for struct AbiParameter
     // @ts-expect-error CairoFelt should be bigint
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFelt, name: 'x'}>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoFelt>>(intValue);
     // @ts-expect-error CairoInt should be number or bigint
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoInt, name: 'x'}>>(voidValue);
+    assertType<StringToPrimitiveType<TAbi, CairoInt>>(voidValue);
     // @ts-expect-error CairoBigInt should be bigint
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoBigInt, name: 'x'}>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoBigInt>>(intValue);
     // @ts-expect-error CairoAddress should be bigint
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoAddress, name: 'x'}>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoAddress>>(intValue);
     // @ts-expect-error CairoFunction should be int
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoFunction, name: 'x'}>>(bigIntValue);
+    assertType<StringToPrimitiveType<TAbi, CairoFunction>>(bigIntValue);
     // @ts-expect-error CairoVoid should be void
-    assertType<AbiParameterToPrimitiveType<TAbi, {ty: CairoVoid, name: 'x'}>>(intValue);
+    assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue);
 })
+
+// let r1 = call(ABI, "say_hello", 5n)
+// let r2 = call(ABI, "nested_option", [])
+// let r3 = call(ABI, "simple_option", [])
+// let r4 = call(ABI, "say_hello_view", [3n, 3n, true])
+
+// let r5 = call(ABI, "test_struct", { integer: 1n, felt: 1n, felt2: 5n, tuple: [1, 2] })
+
+// let r6 = call(ABI, "test_struct_array", [{ integer: 1n, felt: 1n, felt2: 5n, tuple: [1, 2] }])
+
+// let r7 = call(ABI, "test_unknown_types", {})
+// let r8 = call(ABI, "test_enum", 5n)
