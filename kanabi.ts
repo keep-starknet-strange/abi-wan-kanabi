@@ -3,14 +3,14 @@ type MBits = 8 | 16 | 32
 type BigMBits = 64 | 128 | 256
 export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
-export type CairoAddress = 'core::starknet::ContractAddress'
+export type CairoAddress = 'core::starknet::contract_address::ContractAddress'
 export type CairoFunction = 'function';
 export type CairoVoid = '()';
 export type CairoBool = 'core::bool';
 
 
 /// Implementation of tuples
-type MAX_TUPLE_SIZE = 3;
+type MAX_TUPLE_SIZE = 20;
 
 // Question: why do we need both R and A here ?
 type _BuildTuple<
@@ -24,10 +24,12 @@ type _BuildTuple<
   ? _BuildTuple<R, `(${string}`, [...D, 1]>
   : _BuildTuple<`${A})` | R, `${A}, ${string}`, [...D, 1]>;
 
+
 export type CairoTuple = _BuildTuple;
 
+
 type AbiType =
-  CairoFelt | CairoFunction | CairoTuple | CairoInt | CairoBigInt | CairoAddress | CairoBool;
+  CairoFelt | CairoFunction | CairoInt | CairoBigInt | CairoAddress | CairoBool;
 
 // We have to use string to support nesting
 type CairoOptionGeneric<T extends string> = `core::option::Option<${T}>`;
@@ -150,8 +152,6 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 } & {
     [_ in CairoFunction]: number
   } & {
-    [_ in CairoTuple]: any  // TODO: implement tuples
-  } & {
     [_ in CairoInt]: number | bigint // Question: Why not just number ?
   } & {
     [_ in CairoBigInt]: bigint
@@ -171,23 +171,17 @@ export type GenericTypeToPrimitiveType<TAbi extends Abi, G extends string> =
   G extends CairoOptionGeneric<infer T>
   ? T extends AbiType
   ? Option<AbiTypeToPrimitiveType<TAbi, T>>
-  : Option<GenericTypeToPrimitiveType<TAbi, T>>
+  : Option<StringToPrimitiveType<TAbi, T>>
   : G extends CairoArrayGeneric<infer T>
   ? T extends AbiType
   ? AbiTypeToPrimitiveType<TAbi, T>[]
-  : GenericTypeToPrimitiveType<TAbi, T>[]
+  : StringToPrimitiveType<TAbi, T>[]
   : unknown;
 
 
-// Question: AbiParameterToPrimitiveType<TAbi, {ty: "MissingStruct", name: 'x'}
+// Question: StringToPrimitiveType<TAbi, {ty: "MissingStruct", name: 'x'}
 //           doesn't raise an error although there is no struct named
 //           'MissingStruct' defined in the ABI, is this the expected behavior?
-export type AbiParameterToPrimitiveType<
-  TAbi extends Abi,
-  TAbiParameter extends AbiParameter
-> = StringToPrimitiveType<TAbi, TAbiParameter['type']>
-
-
 export type StringToPrimitiveType<
   TAbi extends Abi,
   T extends string
@@ -196,11 +190,20 @@ export type StringToPrimitiveType<
   ? AbiTypeToPrimitiveType<TAbi, T>
   : T extends CairoGeneric<infer _>
   ? GenericTypeToPrimitiveType<TAbi, T>
+  : T extends CairoTuple
+  ? CairoTupleToPrimitive<TAbi, T>
   : ExtractAbiStruct<TAbi, T> extends {
     type: 'struct', members: infer TMembers extends readonly AbiMember[]
   }
   ? {
     [Member in TMembers[number]as Member['name']]:
-    AbiParameterToPrimitiveType<TAbi, Member>
+    StringToPrimitiveType<TAbi, Member['type']>
   }
   : unknown;
+
+export type CairoTupleToPrimitive<TAbi extends Abi, T extends string> =
+  T extends `(${infer first}, ${infer remaining})`
+  ? [StringToPrimitiveType<TAbi, first>, ...CairoTupleToPrimitive<TAbi, `(${remaining})`>]
+  : T extends `(${infer first})`
+  ? [StringToPrimitiveType<TAbi, first>]
+  : [unknown];
