@@ -73,7 +73,6 @@ type AbiMember = {
 type AbiStruct = {
   type: 'struct',
   name: string,
-  // size: number,
   members: readonly AbiMember[]
 };
 
@@ -146,6 +145,18 @@ export type ExtractAbiStruct<
 > =
   Extract<ExtractAbiStructs<TAbi>, { name: TStructName }>;
 
+export type ExtractAbiEnums<TAbi extends Abi> =
+  Extract<TAbi[number], { type: 'enum' }>;
+
+export type ExtractAbiEnumNames<TAbi extends Abi> =
+  ExtractAbiEnums<TAbi>['name'];
+
+export type ExtractAbiEnum<
+  TAbi extends Abi,
+  TEnumName extends ExtractAbiEnumNames<TAbi>
+> =
+  Extract<ExtractAbiEnums<TAbi>, { name: TEnumName }>;
+
 // Question: why do we need TAbi extends Abi here, it's not used ?
 type PrimitiveTypeLookup<TAbi extends Abi> = {
   [_ in CairoFelt]: bigint
@@ -166,7 +177,6 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 export type AbiTypeToPrimitiveType<TAbi extends Abi, TAbiType extends AbiType> =
   PrimitiveTypeLookup<TAbi>[TAbiType];
 
-
 export type GenericTypeToPrimitiveType<TAbi extends Abi, G extends string> =
   G extends CairoOptionGeneric<infer T>
   ? T extends AbiType
@@ -178,10 +188,19 @@ export type GenericTypeToPrimitiveType<TAbi extends Abi, G extends string> =
   : StringToPrimitiveType<TAbi, T>[]
   : unknown;
 
+export type CairoTupleToPrimitive<TAbi extends Abi, T extends string> =
+  T extends `(${infer first}, ${infer remaining})`
+  ? [StringToPrimitiveType<TAbi, first>, ...CairoTupleToPrimitive<TAbi, `(${remaining})`>]
+  : T extends `(${infer first})`
+  ? [StringToPrimitiveType<TAbi, first>]
+  : [unknown];
 
-// Question: StringToPrimitiveType<TAbi, {ty: "MissingStruct", name: 'x'}
-//           doesn't raise an error although there is no struct named
-//           'MissingStruct' defined in the ABI, is this the expected behavior?
+// Convert an object {k1: v1, k2: v2, ...} to a union type of objects with each
+// a single element {k1: v1} | {k2: v2} | ...
+type ObjectToUnion<T extends Record<string, any>> = {
+  [K in keyof T]: { [Key in K]: T[K] };
+}[keyof T];
+
 export type StringToPrimitiveType<
   TAbi extends Abi,
   T extends string
@@ -192,6 +211,18 @@ export type StringToPrimitiveType<
   ? GenericTypeToPrimitiveType<TAbi, T>
   : T extends CairoTuple
   ? CairoTupleToPrimitive<TAbi, T>
+  : ExtractAbiStruct<TAbi, T> extends never
+  ? ExtractAbiEnum<TAbi, T> extends never
+  ? unknown
+  : ExtractAbiEnum<TAbi, T> extends {
+    type: 'enum', variants: infer TVariants extends readonly AbiParameter[]
+  }
+  ? ObjectToUnion<{
+    [Variant in TVariants[number]as Variant['name']]:
+    StringToPrimitiveType<TAbi, Variant['type']>
+  }>
+  // We should never have a type T where ExtractAbiEnum<TAbi, T> return something different than an enum
+  : never
   : ExtractAbiStruct<TAbi, T> extends {
     type: 'struct', members: infer TMembers extends readonly AbiMember[]
   }
@@ -199,11 +230,5 @@ export type StringToPrimitiveType<
     [Member in TMembers[number]as Member['name']]:
     StringToPrimitiveType<TAbi, Member['type']>
   }
-  : unknown;
-
-export type CairoTupleToPrimitive<TAbi extends Abi, T extends string> =
-  T extends `(${infer first}, ${infer remaining})`
-  ? [StringToPrimitiveType<TAbi, first>, ...CairoTupleToPrimitive<TAbi, `(${remaining})`>]
-  : T extends `(${infer first})`
-  ? [StringToPrimitiveType<TAbi, first>]
-  : [unknown];
+  // We should never have a type T where ExtractAbiStruct<TAbi, T> return something different than a struct
+  : never;

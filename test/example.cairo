@@ -10,9 +10,9 @@ mod HelloStarknet {
 
     #[derive(Copy, Drop, Serde)]
     enum TestEnum {
-        Integer: u128,
-        Felt: felt252,
-        Tuple: (u32, u32),
+        int128: u128,
+        felt: felt252,
+        tuple: (u32, u32),
     }
 
     #[derive(Drop, Serde)]
@@ -81,9 +81,9 @@ mod HelloStarknet {
     #[view]
     fn fn_out_enum_array() -> Array<TestEnum> {
         let mut messages: Array<TestEnum> = ArrayTrait::new();
-        messages.append(TestEnum::Integer(100_u128));
-        messages.append(TestEnum::Felt('hello world'));
-        messages.append(TestEnum::Tuple((10_u32, 30_u32)));
+        messages.append(TestEnum::int128(100_u128));
+        messages.append(TestEnum::felt('hello world'));
+        messages.append(TestEnum::tuple((10_u32, 30_u32)));
         messages
     }
 }

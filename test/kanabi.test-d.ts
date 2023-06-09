@@ -12,7 +12,6 @@ import {
     ExtractAbiFunctionNames,
     AbiTypeToPrimitiveType,
     StringToPrimitiveType,
-    ExtractAbiStruct
 } from "../kanabi";
 import { test, expectTypeOf, assertType } from "vitest";
 import { ABI } from "./example";
@@ -80,15 +79,20 @@ test("FunctionArgs", () => {
 
     assertType<FunctionArgs<TAbi, 'fn_simple_array'>>([intValue, intValue]);
 
-    assertType<FunctionArgs<TAbi, 'fn_out_enum_array'>>(emptyArray);
+    assertType<FunctionArgs<TAbi, 'fn_out_enum_array'>>([]);
+
+    assertType<FunctionArgs<TAbi, 'fn_enum'>>({ felt: bigIntValue });
+    assertType<FunctionArgs<TAbi, 'fn_enum'>>({ int128: bigIntValue });
+    assertType<FunctionArgs<TAbi, 'fn_enum'>>({ tuple: [intValue, intValue] });
+
+    assertType<FunctionArgs<TAbi, 'fn_enum_array'>>([{ felt: bigIntValue }, { int128: bigIntValue }, { tuple: [intValue, intValue] }]);
 })
 
 test("FunctionArgs Errors", () => {
     assertType<FunctionArgs<TAbi, 'fn_felt'>>(
-        // @ts-expect-error fn_felt has 1 argument
+        // @ts-expect-error
         [bigIntValue, bigIntValue]
     );
-    // inputs: []
     // @ts-expect-error
     assertType<FunctionArgs<TAbi, 'fn_felt'>>(intValue);
     // @ts-expect-error
@@ -112,47 +116,30 @@ test("FunctionRet", () => {
     assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(intValue);
     assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(undefined);
 
-
     assertType<FunctionRet<TAbi, 'fn_out_nested_option'>>(intValue);
     assertType<FunctionRet<TAbi, 'fn_out_nested_option'>>(undefined);
 
-
-    assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([{ x: { felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] } }]);
-
-    // assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>(voidValue);
+    assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([]);
+    assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([{ felt: bigIntValue }, { int128: bigIntValue }, { tuple: [intValue, intValue] }]);
 })
 
 test("FunctionRet Errors", () => {
-    // output: ()
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'constructor'>>(intValue);
+    assertType<FunctionRet<TAbi, 'fn_felt'>>(intValue);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'transfer'>>(bigIntValue);
+    assertType<FunctionRet<TAbi, 'fn_felt_u8_bool'>>(bigIntValue);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'approve'>>(emptyArray);
+    assertType<FunctionRet<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>(emptyArray);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'increase_allowance'>>(intValue);
+    assertType<FunctionRet<TAbi, 'fn_out_simple_array'>>(intValue);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'decrease_allowance'>>(emptyArray);
+    assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(emptyArray);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'transfer_from'>>(intValue);
-    // output: felt
+    assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([{ felt: bigIntValue }, { x: 1 }]);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'get_name'>>([intValue, intValue]);
+    assertType<FunctionRet<TAbi, 'fn_out_nested_option'>>([intValue, intValue]);
     // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'get_symbol'>>(voidValue);
-    // output: u8
-    // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'get_decimals'>>(emptyArray);
-    // output: u256
-    // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'get_total_supply'>>(intValue);
-    // inputs: u256
-    // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'balance_of'>>([intValue, bigIntValue]);
-    // output: u256
-    // @ts-expect-error
-    assertType<FunctionRet<TAbi, 'allowance'>>([voidValue, intValue]);
+    assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(voidValue);
 })
 
 test("ExtractAbiFunction", () => {
@@ -221,7 +208,7 @@ test("AbiTypeToPrimitiveType Errors", () => {
 })
 
 test("StringToPrimitiveType", () => {
-    // TODO: add tests for struct AbiParameter
+    // TODO: add tests for struct, enum and tuple
     assertType<StringToPrimitiveType<TAbi, CairoFelt>>(bigIntValue);
     assertType<StringToPrimitiveType<TAbi, CairoFelt>>(bigIntValue);
     assertType<StringToPrimitiveType<TAbi, CairoInt>>(intValue);
@@ -233,7 +220,7 @@ test("StringToPrimitiveType", () => {
 })
 
 test("StringToPrimitiveType Errors", () => {
-    // TODO: add tests for struct AbiParameter
+    // TODO: add tests for struct, enum and tuple
     // @ts-expect-error CairoFelt should be bigint
     assertType<StringToPrimitiveType<TAbi, CairoFelt>>(intValue);
     // @ts-expect-error CairoInt should be number or bigint

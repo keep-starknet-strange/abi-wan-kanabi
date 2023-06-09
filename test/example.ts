@@ -163,15 +163,15 @@ export const ABI = [
     "name": "example::example::HelloStarknet::TestEnum",
     "variants": [
       {
-        "name": "Integer",
+        "name": "int128",
         "type": "core::integer::u128"
       },
       {
-        "name": "Felt",
+        "name": "felt",
         "type": "core::felt252"
       },
       {
-        "name": "Tuple",
+        "name": "tuple",
         "type": "(core::integer::u32, core::integer::u32)"
       }
     ]
