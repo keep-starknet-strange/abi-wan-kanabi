@@ -25,6 +25,7 @@ const voidValue = returnVoid();
 const bigIntValue = 105n;
 const intValue = 10;
 const emptyArray: [] = [];
+const boolValue = true;
 
 test("Cairo Types", () => {
     assertType<CairoFelt>("core::felt252");
@@ -70,82 +71,55 @@ test("Cairo Types Errors", () => {
 })
 
 test("FunctionArgs", () => {
-    // inputs: felt, felt, u8, u256, ContractAddress
-    assertType<FunctionArgs<TAbi, 'constructor'>>(
-        [bigIntValue, bigIntValue, intValue, bigIntValue, bigIntValue]
-    );
-    // inputs: []
-    assertType<FunctionArgs<TAbi, 'get_name'>>(emptyArray);
-    assertType<FunctionArgs<TAbi, 'get_symbol'>>(emptyArray);
-    assertType<FunctionArgs<TAbi, 'get_decimals'>>(emptyArray);
-    assertType<FunctionArgs<TAbi, 'get_total_supply'>>(emptyArray);
-    // inputs: ContractAddress
-    assertType<FunctionArgs<TAbi, 'balance_of'>>(bigIntValue);
-    // inputs: ContractAddress, ContractAddress, u256
-    assertType<FunctionArgs<TAbi, 'transfer_from'>>([bigIntValue, bigIntValue, bigIntValue]);
-    // inputs: ContractAddress, u256
-    assertType<FunctionArgs<TAbi, 'transfer'>>([bigIntValue, bigIntValue]);
-    assertType<FunctionArgs<TAbi, 'approve'>>([bigIntValue, bigIntValue]);
-    assertType<FunctionArgs<TAbi, 'increase_allowance'>>([bigIntValue, bigIntValue]);
-    assertType<FunctionArgs<TAbi, 'decrease_allowance'>>([bigIntValue, bigIntValue]);
-    // inputs: ContractAddress, ContractAddress
-    assertType<FunctionArgs<TAbi, 'allowance'>>([bigIntValue, bigIntValue]);
+    assertType<FunctionArgs<TAbi, 'fn_felt'>>(bigIntValue);
+    assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool'>>([bigIntValue, intValue, boolValue]);
+    assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>([bigIntValue, intValue, boolValue]);
+
+    assertType<FunctionArgs<TAbi, 'fn_struct'>>({ felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] });
+    assertType<FunctionArgs<TAbi, 'fn_struct_array'>>([{ felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] }]);
+
+    assertType<FunctionArgs<TAbi, 'fn_simple_array'>>([intValue, intValue]);
+
+    assertType<FunctionArgs<TAbi, 'fn_out_enum_array'>>(emptyArray);
 })
 
 test("FunctionArgs Errors", () => {
-    // inputs: felt, felt, u8, u256, ContractAddress
-    assertType<FunctionArgs<TAbi, 'constructor'>>(
-        // @ts-expect-error constructor has 5 arguments
-        [bigIntValue, bigIntValue, intValue, bigIntValue, bigIntValue, intValue]
+    assertType<FunctionArgs<TAbi, 'fn_felt'>>(
+        // @ts-expect-error fn_felt has 1 argument
+        [bigIntValue, bigIntValue]
     );
     // inputs: []
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'get_name'>>(intValue);
+    assertType<FunctionArgs<TAbi, 'fn_felt'>>(intValue);
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'get_symbol'>>(voidValue);
+    assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool'>>([bigIntValue, intValue, intValue]);
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'get_decimals'>>(intValue);
+    assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>([bigIntValue, intValue]);
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'get_total_supply'>>(bigIntValue);
-    // inputs: ContractAddress
+    assertType<FunctionArgs<TAbi, 'fn_struct'>>({ felt: bigIntValue, int128: bigIntValue, tuple: [intValue, boolValue] });
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'balance_of'>>(voidValue);
-    // inputs: ContractAddress, ContractAddress, u256
+    assertType<FunctionArgs<TAbi, 'fn_struct'>>({ int128: bigIntValue, tuple: [intValue, intValue] });
     // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'transfer_from'>>([bigIntValue, intValue, intValue]);
-    // inputs: ContractAddress, u256
-    // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'transfer'>>([intValue, bigIntValue]);
-    // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'approve'>>([bigIntValue, intValue]);
-    // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'increase_allowance'>>([bigIntValue, voidValue]);
-    // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'decrease_allowance'>>([bigIntValue, emptyArray]);
-    // inputs: ContractAddress, ContractAddress
-    // @ts-expect-error
-    assertType<FunctionArgs<TAbi, 'allowance'>>([intValue, intValue]);
+    assertType<FunctionArgs<TAbi, 'fn_out_enum_array'>>([intValue]);
 })
 
 test("FunctionRet", () => {
-    // output: ()
-    assertType<FunctionRet<TAbi, 'constructor'>>(voidValue);
-    assertType<FunctionRet<TAbi, 'transfer'>>(voidValue);
-    assertType<FunctionRet<TAbi, 'approve'>>(voidValue);
-    assertType<FunctionRet<TAbi, 'increase_allowance'>>(voidValue);
-    assertType<FunctionRet<TAbi, 'decrease_allowance'>>(voidValue);
-    assertType<FunctionRet<TAbi, 'transfer_from'>>(voidValue);
-    // output: felt
-    assertType<FunctionRet<TAbi, 'get_name'>>(bigIntValue);
-    assertType<FunctionRet<TAbi, 'get_symbol'>>(bigIntValue);
-    // output: u8
-    assertType<FunctionRet<TAbi, 'get_decimals'>>(intValue);
-    // output: u256
-    assertType<FunctionRet<TAbi, 'get_total_supply'>>(bigIntValue);
-    // inputs: u256
-    assertType<FunctionRet<TAbi, 'balance_of'>>(bigIntValue);
-    // output: u256
-    assertType<FunctionRet<TAbi, 'allowance'>>(bigIntValue);
+    assertType<FunctionRet<TAbi, 'fn_felt_out_felt'>>(bigIntValue);
+
+    assertType<FunctionRet<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>([bigIntValue, bigIntValue, intValue, boolValue]);
+    assertType<FunctionRet<TAbi, 'fn_out_simple_array'>>([intValue, intValue]);
+
+    assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(intValue);
+    assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(undefined);
+
+
+    assertType<FunctionRet<TAbi, 'fn_out_nested_option'>>(intValue);
+    assertType<FunctionRet<TAbi, 'fn_out_nested_option'>>(undefined);
+
+
+    assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([{ x: { felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] } }]);
+
+    // assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>(voidValue);
 })
 
 test("FunctionRet Errors", () => {
@@ -182,37 +156,41 @@ test("FunctionRet Errors", () => {
 })
 
 test("ExtractAbiFunction", () => {
-    type Expected = {
-        readonly type: "function";
-        readonly name: "balance_of";
-        readonly inputs: readonly [{
-            readonly name: "account";
-            readonly ty: "core::starknet::ContractAddress";
-        }];
-        readonly output_ty: "core::integer::u256";
-        readonly state_mutability: "view";
-    };
-    expectTypeOf<ExtractAbiFunction<TAbi, "balance_of">>().toEqualTypeOf<Expected>();
+    const fnValue = {
+        type: "function",
+        name: "fn_felt_out_felt",
+        inputs: [
+            {
+                "name": "felt",
+                "type": "core::felt252"
+            }
+        ],
+        outputs: [
+            {
+                "type": "core::felt252"
+            }
+        ],
+        state_mutability: "view"
+    } as const;
+    assertType<ExtractAbiFunction<TAbi, "fn_felt_out_felt">>(fnValue);
 })
 
 test("ExtractAbiFunctionName", () => {
     type Expected =
-        | "balance_of"
-        | "constructor"
-        | "get_name"
-        | "get_symbol"
-        | "get_decimals"
-        | "get_total_supply"
-        | "allowance"
-        | "transfer"
-        | "transfer_from"
-        | "approve"
-        | "increase_allowance"
-        | "decrease_allowance"
-        | "test_option"
-        | "test_array"
-        | "test_array_of_options"
-        | "test_array_of_options_of_arrays";
+        | "fn_felt"
+        | "fn_felt_u8_bool"
+        | "fn_felt_u8_bool_out_address_felt_u8_bool"
+        | "fn_felt_out_felt"
+        | "fn_out_simple_option"
+        | "fn_out_nested_option"
+        | "fn_simple_array"
+        | "fn_out_simple_array"
+        | "fn_struct_array"
+        | "fn_struct"
+        | "fn_enum"
+        | "fn_enum_array"
+        | "fn_out_enum_array";
+
 
     expectTypeOf<ExtractAbiFunctionNames<TAbi>>().toEqualTypeOf<Expected>();
 })
@@ -225,9 +203,6 @@ test("AbiTypeToPrimitiveType", () => {
     assertType<AbiTypeToPrimitiveType<TAbi, CairoAddress>>(bigIntValue);
     assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue);
     assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(voidValue);
-
-    // Tuple isn't implemented yet, it always returns any
-    assertType<AbiTypeToPrimitiveType<TAbi, CairoTuple>>(intValue);
 })
 
 test("AbiTypeToPrimitiveType Errors", () => {
@@ -255,9 +230,6 @@ test("StringToPrimitiveType", () => {
     assertType<StringToPrimitiveType<TAbi, CairoAddress>>(bigIntValue);
     assertType<StringToPrimitiveType<TAbi, CairoFunction>>(intValue);
     assertType<StringToPrimitiveType<TAbi, CairoVoid>>(voidValue);
-
-    // Tuple ins't yet implemented, it always returns any
-    assertType<StringToPrimitiveType<TAbi, CairoTuple>>(intValue);
 })
 
 test("StringToPrimitiveType Errors", () => {
@@ -275,15 +247,3 @@ test("StringToPrimitiveType Errors", () => {
     // @ts-expect-error CairoVoid should be void
     assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue);
 })
-
-// let r1 = call(ABI, "say_hello", 5n)
-// let r2 = call(ABI, "nested_option", [])
-// let r3 = call(ABI, "simple_option", [])
-// let r4 = call(ABI, "say_hello_view", [3n, 3n, true])
-
-// let r5 = call(ABI, "test_struct", { integer: 1n, felt: 1n, felt2: 5n, tuple: [1, 2] })
-
-// let r6 = call(ABI, "test_struct_array", [{ integer: 1n, felt: 1n, felt2: 5n, tuple: [1, 2] }])
-
-// let r7 = call(ABI, "test_unknown_types", {})
-// let r8 = call(ABI, "test_enum", 5n)

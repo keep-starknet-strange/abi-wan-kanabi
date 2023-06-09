@@ -17,7 +17,7 @@ mod HelloStarknet {
 
     #[derive(Drop, Serde)]
     struct TestStruct {
-        integer: u128,
+        int128: u128,
         felt: felt252,
         tuple: (u32, u32)
     }

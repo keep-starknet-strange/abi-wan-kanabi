@@ -121,7 +121,7 @@ export const ABI = [
     "name": "example::example::HelloStarknet::TestStruct",
     "members": [
       {
-        "name": "integer",
+        "name": "int128",
         "type": "core::integer::u128"
       },
       {

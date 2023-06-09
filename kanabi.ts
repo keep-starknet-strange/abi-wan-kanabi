@@ -29,10 +29,10 @@ export type CairoTuple = _BuildTuple;
 
 
 type AbiType =
-  CairoFelt | CairoFunction | CairoInt | CairoBigInt | CairoAddress | CairoBool;
+  CairoFelt | CairoFunction | CairoInt | CairoBigInt | CairoAddress | CairoBool | CairoVoid;
 
 // We have to use string to support nesting
-type CairoOptionGeneric<T extends string> = `core::option::Option<${T}>`;
+type CairoOptionGeneric<T extends string> = `core::option::Option::<${T}>`;
 type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>`;
 type CairoGeneric<T extends string> = CairoOptionGeneric<T> | CairoArrayGeneric<T>
 
