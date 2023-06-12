@@ -113,10 +113,10 @@ test('FunctionArgs Errors', () => {
   )
   // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_felt'>>(intValue)
-  // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool'>>([
     bigIntValue,
     intValue,
+    // @ts-expect-error
     intValue,
   ])
   // @ts-expect-error
@@ -124,10 +124,10 @@ test('FunctionArgs Errors', () => {
     bigIntValue,
     intValue,
   ])
-  // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_struct'>>({
     felt: bigIntValue,
     int128: bigIntValue,
+    // @ts-expect-error
     tuple: [intValue, boolValue],
   })
   // @ts-expect-error
@@ -169,17 +169,19 @@ test('FunctionRet Errors', () => {
   assertType<FunctionRet<TAbi, 'fn_felt'>>(intValue)
   // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_felt_u8_bool'>>(bigIntValue)
-  // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>(
+    // @ts-expect-error
     emptyArray,
   )
   // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_out_simple_array'>>(intValue)
   // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(emptyArray)
-  // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_out_enum_array'>>([
     { felt: bigIntValue },
+    { int128: bigIntValue },
+    { tuple: [intValue, intValue] },
+    // @ts-expect-error
     { x: 1 },
   ])
   // @ts-expect-error
