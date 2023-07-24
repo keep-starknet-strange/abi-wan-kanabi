@@ -1,203 +1,228 @@
-import {call} from '../index';
-
 export const ABI = [
   {
-    'type': 'function',
-    'name': 'constructor',
-    'inputs': [
-      {'name': 'name_', 'ty': 'core::felt'},
-      {'name': 'symbol_', 'ty': 'core::felt'},
-      {'name': 'decimals_', 'ty': 'core::integer::u8'},
-      {'name': 'initial_supply', 'ty': 'core::integer::u256'},
-      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'}
+    type: 'function',
+    name: 'fn_felt',
+    inputs: [
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    outputs: [],
+    state_mutability: 'external',
   },
   {
-    'type': 'function',
-    'name': 'get_name',
-    'inputs': [],
-    'output_ty': 'core::felt',
-    'state_mutability': 'view'
-  },
-  {
-    'type': 'function',
-    'name': 'get_symbol',
-    'inputs': [],
-    'output_ty': 'core::felt',
-    'state_mutability': 'view'
-  },
-  {
-    'type': 'function',
-    'name': 'get_decimals',
-    'inputs': [],
-    'output_ty': 'core::integer::u8',
-    'state_mutability': 'view'
-  },
-  {
-    'type': 'function',
-    'name': 'get_total_supply',
-    'inputs': [],
-    'output_ty': 'core::integer::u256',
-    'state_mutability': 'view'
-  },
-  {
-    'type': 'function',
-    'name': 'balance_of',
-    'inputs': [{'name': 'account', 'ty': 'core::starknet::ContractAddress'}],
-    'output_ty': 'core::integer::u256',
-    'state_mutability': 'view'
-  },
-  {
-    'type': 'function',
-    'name': 'allowance',
-    'inputs': [
-      {'name': 'owner', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'}
+    type: 'function',
+    name: 'fn_felt_u8_bool',
+    inputs: [
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
+      {
+        name: 'int8',
+        type: 'core::integer::u8',
+      },
+      {
+        name: 'b',
+        type: 'core::bool',
+      },
     ],
-    'output_ty': 'core::integer::u256',
-    'state_mutability': 'view'
+    outputs: [],
+    state_mutability: 'external',
   },
   {
-    'type': 'function',
-    'name': 'transfer',
-    'inputs': [
-      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'amount', 'ty': 'core::integer::u256'}
+    type: 'function',
+    name: 'fn_felt_u8_bool_out_address_felt_u8_bool',
+    inputs: [
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
+      {
+        name: 'int8',
+        type: 'core::integer::u8',
+      },
+      {
+        name: 'boolean',
+        type: 'core::bool',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
-  },
-  {
-    'type': 'function',
-    'name': 'transfer_from',
-    'inputs': [
-      {'name': 'sender', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'recipient', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'amount', 'ty': 'core::integer::u256'}
+    outputs: [
+      {
+        type: '(core::starknet::contract_address::ContractAddress, core::felt252, core::integer::u8, core::bool)',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'approve',
-    'inputs': [
-      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'amount', 'ty': 'core::integer::u256'}
+    type: 'function',
+    name: 'fn_felt_out_felt',
+    inputs: [
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
-  },
-  {
-    'type': 'function',
-    'name': 'increase_allowance',
-    'inputs': [
-      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'added_value', 'ty': 'core::integer::u256'}
+    outputs: [
+      {
+        type: 'core::felt252',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'decrease_allowance',
-    'inputs': [
-      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'subtracted_value', 'ty': 'core::integer::u256'}
+    type: 'function',
+    name: 'fn_out_simple_option',
+    inputs: [],
+    outputs: [
+      {
+        type: 'core::option::Option::<core::integer::u8>',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'test_option',
-    'inputs': [
-      {'name': 'option', 'ty': 'core::option::Option<core::option::Option<core::integer::u8>>'},
+    type: 'function',
+    name: 'fn_out_nested_option',
+    inputs: [],
+    outputs: [
+      {
+        type: 'core::option::Option::<core::option::Option::<core::integer::u8>>',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'test_array',
-    'inputs': [
-      {'name': 'option', 'ty': 'core::array::Array::<core::integer::u8>'},
+    type: 'function',
+    name: 'fn_simple_array',
+    inputs: [
+      {
+        name: 'arg',
+        type: 'core::array::Array::<core::integer::u8>',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    outputs: [],
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'test_array_of_options',
-    'inputs': [
-      {'name': 'option', 'ty': 'core::array::Array::<core::option::Option<core::integer::u8>>'},
+    type: 'function',
+    name: 'fn_out_simple_array',
+    inputs: [],
+    outputs: [
+      {
+        type: 'core::array::Array::<core::integer::u8>',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
+    state_mutability: 'view',
   },
   {
-    'type': 'function',
-    'name': 'test_array_of_options_of_arrays',
-    'inputs': [
-      {'name': 'option', 'ty': 'core::array::Array::<core::option::Option<core::array::Array::<core::integer::u8>>>'},
+    type: 'struct',
+    name: 'example::example::HelloStarknet::TestStruct',
+    members: [
+      {
+        name: 'int128',
+        type: 'core::integer::u128',
+      },
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
+      {
+        name: 'tuple',
+        type: '(core::integer::u32, core::integer::u32)',
+      },
     ],
-    'output_ty': '()',
-    'state_mutability': 'external'
   },
   {
-    'type': 'event',
-    'name': 'Transfer',
-    'inputs': [
-      {'name': 'from', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'to', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'value', 'ty': 'core::integer::u256'}
-    ]
+    type: 'function',
+    name: 'fn_struct_array',
+    inputs: [
+      {
+        name: 'arg',
+        type: 'core::array::Array::<example::example::HelloStarknet::TestStruct>',
+      },
+    ],
+    outputs: [],
+    state_mutability: 'view',
   },
   {
-    'type': 'event',
-    'name': 'Approval',
-    'inputs': [
-      {'name': 'owner', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'spender', 'ty': 'core::starknet::ContractAddress'},
-      {'name': 'value', 'ty': 'core::integer::u256'}
-    ]
-  }
-] as const;
-
-// Setting output to core::option::Option<()> causes type check errors everywhere
-
-// inputs: felt, felt, u8, u256, ContractAddress | output: ()
-const ret1 =
-    call(ABI, 'constructor', [5n, 2n, 4, 2n, 1n]);
-
-// inputs: [] | output: felt
-const ret2 = call(ABI, 'get_name', []);
-const ret3 = call(ABI, 'get_symbol', []);
-// inputs: [] | output: u8
-const ret4 = call(ABI, 'get_decimals', []);
-// inputs: [] | output: u256
-const ret5 = call(ABI, 'get_total_supply', []);
-// inputs: ContractAddress, ContractAddress | output: u256
-const ret6 = call(ABI, 'balance_of', 5n);
-// inputs: ContractAddress, ContractAddress, u256 | output: ()
-const ret9 = call(ABI, 'transfer_from', [1n, 2n, 3n]);
-// inputs: ContractAddress, u256 | output: ()
-const ret8 = call(ABI, 'transfer', [1n, 2n]);
-const ret10 = call(ABI, 'approve', [1n, 2n]);
-const ret11 = call(ABI, 'increase_allowance', [1n, 2n]);
-const ret12 = call(ABI, 'decrease_allowance', [1n, 2n]);
-// inputs: ContractAddress, ContractAddress | output: u256
-const ret7 = call(ABI, 'allowance', [1n, 2n]);
-
-const ret13 = call(ABI, 'test_option', 5);
-const ret14 = call(ABI, 'test_option', undefined);
-
-const ret15 = call(ABI, 'test_array', [1, 2, 3, 4]);
-const ret16 = call(ABI, 'test_array', [1n, 2n, 3n]);
-const ret17 = call(ABI, 'test_array', [1n, 2n, 3]);
-
-const ret18 = call(ABI, "test_array_of_options", [1, 2, undefined, undefined, 3]);
-
-const ret19 = call(ABI, "test_array_of_options_of_arrays", [[1, 2], undefined, [5, 6]])
+    type: 'function',
+    name: 'fn_struct',
+    inputs: [
+      {
+        name: 'arg',
+        type: 'example::example::HelloStarknet::TestStruct',
+      },
+    ],
+    outputs: [],
+    state_mutability: 'view',
+  },
+  {
+    type: 'enum',
+    name: 'example::example::HelloStarknet::TestEnum',
+    variants: [
+      {
+        name: 'int128',
+        type: 'core::integer::u128',
+      },
+      {
+        name: 'felt',
+        type: 'core::felt252',
+      },
+      {
+        name: 'tuple',
+        type: '(core::integer::u32, core::integer::u32)',
+      },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'fn_enum',
+    inputs: [
+      {
+        name: 'arg',
+        type: 'example::example::HelloStarknet::TestEnum',
+      },
+    ],
+    outputs: [],
+    state_mutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'fn_enum_array',
+    inputs: [
+      {
+        name: 'arg',
+        type: 'core::array::Array::<example::example::HelloStarknet::TestEnum>',
+      },
+    ],
+    outputs: [],
+    state_mutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'fn_out_enum_array',
+    inputs: [],
+    outputs: [
+      {
+        type: 'core::array::Array::<example::example::HelloStarknet::TestEnum>',
+      },
+    ],
+    state_mutability: 'view',
+  },
+  {
+    type: 'event',
+    name: 'TestEvent',
+    inputs: [
+      {
+        name: 'from',
+        type: 'core::starknet::contract_address::ContractAddress',
+      },
+      {
+        name: 'value',
+        type: 'core::felt252',
+      },
+    ],
+  },
+] as const
