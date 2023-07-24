@@ -3,7 +3,10 @@ import {
   ExtractAbiFunctionNames,
   FunctionArgs,
   FunctionRet,
+  ContractFunctions,
 } from './kanabi'
+
+export { Abi } from './kanabi';
 
 export function call<
   TAbi extends Abi,
@@ -15,3 +18,13 @@ export function call<
 ): FunctionRet<TAbi, TFunctionName> {
   throw new Error('todo')
 }
+
+type TypedCall<TAbi extends Abi> = {
+  call<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
+    method: TFunctionName,
+    args?: FunctionArgs<TAbi, TFunctionName>
+  ): Promise<FunctionRet<TAbi, TFunctionName>>;
+};
+
+export type TypedContract<TAbi extends Abi> = TypedCall<TAbi> &
+  ContractFunctions<TAbi>;
