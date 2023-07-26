@@ -6,7 +6,7 @@ import {
   ContractFunctions,
 } from './kanabi'
 
-export { Abi } from './kanabi';
+export { Abi } from './kanabi'
 
 export function call<
   TAbi extends Abi,
@@ -22,9 +22,9 @@ export function call<
 type TypedCall<TAbi extends Abi> = {
   call<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
     method: TFunctionName,
-    args?: FunctionArgs<TAbi, TFunctionName>
-  ): Promise<FunctionRet<TAbi, TFunctionName>>;
-};
+    args?: FunctionArgs<TAbi, TFunctionName>,
+  ): Promise<FunctionRet<TAbi, TFunctionName>>
+}
 
 export type TypedContract<TAbi extends Abi> = TypedCall<TAbi> &
-  ContractFunctions<TAbi>;
+  ContractFunctions<TAbi>

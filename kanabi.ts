@@ -1,8 +1,18 @@
+import {
+  BigNumberish,
+  CallOptions,
+  Calldata,
+  InvokeFunctionResponse,
+  InvokeOptions,
+  Uint256,
+} from './starknet'
+
 export type CairoFelt = 'core::felt252'
 type MBits = 8 | 16 | 32
-type BigMBits = 64 | 128 | 256
+type BigMBits = 64 | 128
 export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
+export type CairoU256 = 'core::integer::u256'
 export type CairoAddress = 'core::starknet::contract_address::ContractAddress'
 export type CairoFunction = 'function'
 export type CairoVoid = '()'
@@ -29,6 +39,7 @@ type AbiType =
   | CairoFunction
   | CairoInt
   | CairoBigInt
+  | CairoU256
   | CairoAddress
   | CairoBool
   | CairoVoid
@@ -165,15 +176,17 @@ export type ExtractAbiEnum<
 
 // Question: why do we need TAbi extends Abi here, it's not used ?
 type PrimitiveTypeLookup<TAbi extends Abi> = {
-  [_ in CairoFelt]: bigint
+  [_ in CairoFelt]: BigNumberish
 } & {
   [_ in CairoFunction]: number
 } & {
-  [_ in CairoInt]: number | bigint // Question: Why not just number ?
+  [_ in CairoInt]: number | bigint
 } & {
-  [_ in CairoBigInt]: bigint
+  [_ in CairoU256]: number | bigint | Uint256
 } & {
-  [_ in CairoAddress]: bigint
+  [_ in CairoBigInt]: number | bigint
+} & {
+  [_ in CairoAddress]: string
 } & {
   [_ in CairoVoid]: void
 } & {
@@ -257,27 +270,67 @@ export type StringToPrimitiveType<
     never
 
 type UnionToIntersection<Union> = (
-  Union extends unknown ? (arg: Union) => unknown : never
+  Union extends unknown
+    ? (arg: Union) => unknown
+    : never
 ) extends (arg: infer R) => unknown
   ? R
-  : never;
+  : never
+
+export type FunctionCallWithCallData<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = (
+  calldata: Calldata,
+) => TAbiFunction['state_mutability'] extends 'view'
+  ? Promise<FunctionRet<TAbi, TAbiFunction['name']>>
+  : InvokeFunctionResponse
+
+export type ExtractArgs<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = TAbiFunction['inputs'] extends infer TInput extends readonly AbiParameter[]
+  ? {
+      [K3 in
+        keyof TInput]: TInput[K3] extends infer TInputParam extends AbiParameter
+        ? StringToPrimitiveType<TAbi, TInputParam['type']>
+        : never
+    }
+  : never
+
+export type FunctionCallWithArgs<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = (
+  ...args: ExtractArgs<TAbi, TAbiFunction>
+) => TAbiFunction['state_mutability'] extends 'view'
+  ? Promise<FunctionRet<TAbi, TAbiFunction['name']>>
+  : InvokeFunctionResponse
+
+export type FunctionCallWithOptions<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = TAbiFunction['state_mutability'] extends 'view'
+  ? (
+      options?: CallOptions,
+      ...args: ExtractArgs<TAbi, TAbiFunction>
+    ) => Promise<FunctionRet<TAbi, TAbiFunction['name']>>
+  : (
+      options?: InvokeOptions,
+      ...args: ExtractArgs<TAbi, TAbiFunction>
+    ) => InvokeFunctionResponse
 
 export type ContractFunctions<TAbi extends Abi> = UnionToIntersection<
   {
-    [K in keyof TAbi]: TAbi[K] extends infer TAbiFunction extends AbiFunction & {
-      type: 'function';
-    }
+    [K in keyof TAbi]: TAbi[K] extends infer TAbiFunction extends AbiFunction
       ? {
-          [K2 in TAbiFunction['name']]: (
-            ...args: TAbiFunction['inputs'] extends infer TInput extends readonly AbiParameter[]
-              ? {
-                  [K3 in keyof TInput]: TInput[K3] extends infer TInputParam extends AbiParameter
-                    ? StringToPrimitiveType<TAbi, TInputParam["type"]>
-                    : never;
-                }
-              : never
-          ) => Promise<FunctionRet<TAbi, TAbiFunction['name']>>;
+          [K2 in TAbiFunction['name']]: FunctionCallWithArgs<
+            TAbi,
+            TAbiFunction
+          > &
+            FunctionCallWithCallData<TAbi, TAbiFunction> &
+            FunctionCallWithOptions<TAbi, TAbiFunction>
         }
-      : never;
+      : never
   }[number]
->;
+>
