@@ -6,6 +6,7 @@ import {
   CairoFunction,
   CairoInt,
   CairoTuple,
+  CairoU256,
   CairoVoid,
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
@@ -33,7 +34,7 @@ test('Cairo Types', () => {
   assertType<CairoInt>('core::integer::u32')
   assertType<CairoBigInt>('core::integer::u64')
   assertType<CairoBigInt>('core::integer::u128')
-  assertType<CairoBigInt>('core::integer::u256')
+  assertType<CairoU256>('core::integer::u256')
   assertType<CairoAddress>('core::starknet::contract_address::ContractAddress')
   assertType<CairoFunction>('function')
   assertType<CairoVoid>('()')
@@ -234,6 +235,7 @@ test('AbiTypeToPrimitiveType', () => {
   assertType<AbiTypeToPrimitiveType<TAbi, CairoInt>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoInt>>(bigIntValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(bigIntValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoU256>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoAddress>>(bigIntValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(voidValue)
