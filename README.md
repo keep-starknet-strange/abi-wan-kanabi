@@ -50,7 +50,7 @@ Currently supported:
 
 | Abi-Wan npm  | Cairo compiler |
 | ------------- | ------------- |
-| [1.0.2](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.2)  | [Cairo 1](https://community.starknet.io/t/cairo-1-contract-syntax-is-evolving/94794)  |
+| [1.0.3](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.3)  | [Cairo 1](https://community.starknet.io/t/cairo-1-contract-syntax-is-evolving/94794)  |
 
 ### Build
 
