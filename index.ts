@@ -1,12 +1,12 @@
 import {
   Abi,
+  ContractFunctions,
   ExtractAbiFunctionNames,
   FunctionArgs,
   FunctionRet,
-  ContractFunctions,
 } from './kanabi'
 
-export { Abi } from './kanabi'
+export { type Abi } from './kanabi'
 
 export function call<
   TAbi extends Abi,
