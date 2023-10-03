@@ -24,6 +24,7 @@ function returnVoid() {}
 const voidValue = returnVoid()
 const bigIntValue = 105n
 const intValue = 10
+const stringValue = "s"
 const emptyArray: [] = []
 const boolValue = true
 
@@ -113,7 +114,7 @@ test('FunctionArgs Errors', () => {
     [bigIntValue, bigIntValue],
   )
   // @ts-expect-error
-  assertType<FunctionArgs<TAbi, 'fn_felt'>>(intValue)
+  assertType<FunctionArgs<TAbi, 'fn_felt'>>(boolValue)
   assertType<FunctionArgs<TAbi, 'fn_felt_u8_bool'>>([
     bigIntValue,
     intValue,
@@ -144,7 +145,7 @@ test('FunctionRet', () => {
   assertType<FunctionRet<TAbi, 'fn_felt_out_felt'>>(bigIntValue)
 
   assertType<FunctionRet<TAbi, 'fn_felt_u8_bool_out_address_felt_u8_bool'>>([
-    bigIntValue,
+    stringValue,
     bigIntValue,
     intValue,
     boolValue,
@@ -231,24 +232,30 @@ test('ExtractAbiFunctionName', () => {
 })
 
 test('AbiTypeToPrimitiveType', () => {
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoFelt>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFelt>>(bigIntValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoFelt>>(stringValue)
+
   assertType<AbiTypeToPrimitiveType<TAbi, CairoInt>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoInt>>(bigIntValue)
+
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(bigIntValue)
+
   assertType<AbiTypeToPrimitiveType<TAbi, CairoU256>>(intValue)
-  assertType<AbiTypeToPrimitiveType<TAbi, CairoAddress>>(bigIntValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoAddress>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(voidValue)
 })
 
 test('AbiTypeToPrimitiveType Errors', () => {
-  // @ts-expect-error CairoFelt should be bigint
-  assertType<AbiTypeToPrimitiveType<TAbi, CairoFelt>>(intValue)
+  // @ts-expect-error CairoFelt should be number, bigint or string
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoFelt>>(boolValue)
   // @ts-expect-error CairoInt should be number or bigint
   assertType<AbiTypeToPrimitiveType<TAbi, CairoInt>>(voidValue)
-  // @ts-expect-error CairoBigInt should be bigint
-  assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(intValue)
-  // @ts-expect-error CairoAddress should be bigint
+  // @ts-expect-error CairoBigInt should be number or bigint
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(voidValue)
+  // @ts-expect-error CairoAddress should be string
   assertType<AbiTypeToPrimitiveType<TAbi, CairoAddress>>(intValue)
   // @ts-expect-error CairoFunction should be int
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(bigIntValue)
@@ -263,7 +270,7 @@ test('StringToPrimitiveType', () => {
   assertType<StringToPrimitiveType<TAbi, CairoInt>>(intValue)
   assertType<StringToPrimitiveType<TAbi, CairoInt>>(bigIntValue)
   assertType<StringToPrimitiveType<TAbi, CairoBigInt>>(bigIntValue)
-  assertType<StringToPrimitiveType<TAbi, CairoAddress>>(bigIntValue)
+  assertType<StringToPrimitiveType<TAbi, CairoAddress>>(stringValue)
   assertType<StringToPrimitiveType<TAbi, CairoFunction>>(intValue)
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(voidValue)
 })
@@ -271,11 +278,11 @@ test('StringToPrimitiveType', () => {
 test('StringToPrimitiveType Errors', () => {
   // TODO: add tests for struct, enum and tuple
   // @ts-expect-error CairoFelt should be bigint
-  assertType<StringToPrimitiveType<TAbi, CairoFelt>>(intValue)
+  assertType<StringToPrimitiveType<TAbi, CairoFelt>>(voidValue)
   // @ts-expect-error CairoInt should be number or bigint
   assertType<StringToPrimitiveType<TAbi, CairoInt>>(voidValue)
   // @ts-expect-error CairoBigInt should be bigint
-  assertType<StringToPrimitiveType<TAbi, CairoBigInt>>(intValue)
+  assertType<StringToPrimitiveType<TAbi, CairoBigInt>>(boolValue)
   // @ts-expect-error CairoAddress should be bigint
   assertType<StringToPrimitiveType<TAbi, CairoAddress>>(intValue)
   // @ts-expect-error CairoFunction should be int
