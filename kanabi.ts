@@ -14,6 +14,7 @@ export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
 export type CairoU256 = 'core::integer::u256'
 export type CairoAddress = 'core::starknet::contract_address::ContractAddress'
+export type CairoClassHash = 'core::starknet::class_hash::ClassHash'
 export type CairoFunction = 'function'
 export type CairoVoid = '()'
 export type CairoBool = 'core::bool'
@@ -41,6 +42,7 @@ type AbiType =
   | CairoBigInt
   | CairoU256
   | CairoAddress
+  | CairoClassHash
   | CairoBool
   | CairoVoid
 
@@ -66,6 +68,24 @@ type AbiOutput = {
 
 type AbiStateMutability = 'view' | 'external'
 
+type AbiImpl = {
+  type: 'impl'
+  name: string
+  interface_name: string
+}
+
+type AbiInterface = {
+  type: 'interface'
+  name: string
+  items: readonly AbiFunction[]
+}
+
+type AbiConstructor = {
+  type: 'constructor'
+  name: 'constructor'
+  inputs: readonly AbiParameter[]
+}
+
 type AbiFunction = {
   type: 'function'
   name: string
@@ -74,11 +94,21 @@ type AbiFunction = {
   state_mutability: AbiStateMutability
 }
 
-type AbiEvent = {
+type AbiEventStruct = {
   type: 'event'
   name: string
-  inputs: readonly AbiParameter[]
+  kind: 'struct'
+  members: readonly AbiParameter[]
 }
+
+type AbiEventEnum = {
+  type: 'event'
+  name: string
+  kind: 'enum'
+  variants: readonly AbiParameter[]
+}
+
+type AbiEvent = AbiEventStruct | AbiEventEnum
 
 type AbiMember = {
   name: string
@@ -97,7 +127,15 @@ type AbiEnum = {
   variants: readonly AbiParameter[]
 }
 
-export type Abi = readonly (AbiFunction | AbiStruct | AbiEvent | AbiEnum)[]
+export type Abi = readonly (
+  | AbiImpl
+  | AbiInterface
+  | AbiConstructor
+  | AbiFunction
+  | AbiStruct
+  | AbiEnum
+  | AbiEvent
+)[]
 
 /// Implement
 type _BuildArgs<
@@ -135,10 +173,19 @@ export type FunctionRet<
       ExtractAbiFunction<TAbi, TFunctionName>['outputs'][0]['type']
     >
 
-export type ExtractAbiFunctions<TAbi extends Abi> = Extract<
+export type ExtractAbiImpls<TAbi extends Abi> = Extract<
   TAbi[number],
-  { type: 'function' }
+  { type: 'impl' }
 >
+
+export type ExtractAbiInterfaces<TAbi extends Abi> = Extract<
+  TAbi[number],
+  { type: 'interface' }
+>
+
+export type ExtractAbiFunctions<TAbi extends Abi> =
+  | Extract<ExtractAbiInterfaces<TAbi>['items'][number], { type: 'function' }>
+  | Extract<TAbi[number], { type: 'function' }>
 
 export type ExtractAbiFunctionNames<TAbi extends Abi> =
   ExtractAbiFunctions<TAbi>['name']
@@ -187,6 +234,8 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
   [_ in CairoBigInt]: number | bigint
 } & {
   [_ in CairoAddress]: string
+} & {
+  [_ in CairoClassHash]: string
 } & {
   [_ in CairoVoid]: void
 } & {
