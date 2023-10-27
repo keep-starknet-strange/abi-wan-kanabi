@@ -55,7 +55,7 @@ Currently supported:
 
 ### Build
 
-To use abiwan, you must first generate types from your contracts' ABI json files, you can use the the helper script:
+To use abiwan, you must first generate types from your contracts' ABI json files, you can use the helper script:
 
 ```bash
 npm run generate -- --input /path/to/abi.json --output /path/to/abi.ts
