@@ -24,7 +24,7 @@ function returnVoid() {}
 const voidValue = returnVoid()
 const bigIntValue = 105n
 const intValue = 10
-const stringValue = "s"
+const stringValue = 's'
 const emptyArray: [] = []
 const boolValue = true
 
