@@ -290,3 +290,30 @@ test('StringToPrimitiveType Errors', () => {
   // @ts-expect-error CairoVoid should be void
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue)
 })
+
+test('StringToPrimitiveTypeEvent', () => {
+  // TODO: add tests for struct, enum and tuple
+  // TODO: why is the assertType passes for unknown types ? We probably should use another
+  assertType<StringToPrimitiveType<TAbi, "wrong_type_name">>({
+    TestCounterIncreased: {
+      amount: 1
+    }
+  })
+  assertType<StringToPrimitiveType<TAbi, "example::example_contract::Event">>({
+    TestCounterIncreased: {
+      amount: 1
+    }
+  })
+  assertType<StringToPrimitiveType<TAbi, "example::example_contract::Event">>({
+    TestCounterDecreased: {
+      amount: 1
+    }
+  })
+  assertType<StringToPrimitiveType<TAbi, "example::example_contract::Event">>({
+    TestEnum: {
+      Var1: {
+        member: 1
+      }
+    }
+  })
+})

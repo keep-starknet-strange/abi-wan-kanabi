@@ -12,6 +12,7 @@ enum TestEnum {
     int128: u128,
     felt: felt252,
     tuple: (u32, u32),
+    novalue,
 }
 
 #[starknet::interface]
@@ -51,9 +52,39 @@ mod example_contract {
     use starknet::get_caller_address;
     use example::TestStruct;
     use example::TestEnum;
-
     #[storage]
     struct Storage {}
+
+    //high-level code defining the events
+
+    #[derive(Drop, starknet::Event)]
+    #[event]
+    enum Event {
+        // ComponentEvent: test_component::Event,
+        TestCounterIncreased: CounterIncreased,
+        TestCounterDecreased: CounterDecreased,
+        TestEnum: MyEnum
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct CounterIncreased {
+        amount: u128
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct CounterDecreased {
+        amount: u128
+    }
+
+    #[derive(Copy, Drop, starknet::Event)]
+    enum MyEnum {
+        Var1: MyStruct
+    }
+
+    #[derive(Copy, Drop, Serde, starknet::Event)]
+    struct MyStruct {
+        member: u128
+    }
 
     #[external(v0)]
     impl ExampleContract of super::IExampleContract<ContractState> {
