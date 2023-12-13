@@ -303,7 +303,7 @@ type ObjectToUnion<T extends Record<string, any>> = {
 
 export type EventToPrimitiveType<
   TAbi extends Abi,
-  TEventName extends string,
+  TEventName extends ExtractAbiEventNames<TAbi>,
 > = ExtractAbiEvent<TAbi, TEventName> extends {
   type: 'event'
   kind: 'struct'
