@@ -233,8 +233,6 @@ export type ExtractAbiEvents<TAbi extends Abi> = Extract<
   TAbi[number],
   { type: 'event' }
 >
-// TODO: make sure events can't be inside interfaces
-// | Extract<ExtractAbiInterfaces<TAbi>['items'][number], { type: 'event' }>
 
 export type ExtractAbiEventNames<TAbi extends Abi> =
   ExtractAbiEvents<TAbi>['name']
