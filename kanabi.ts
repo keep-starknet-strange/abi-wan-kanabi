@@ -94,18 +94,26 @@ type AbiFunction = {
   state_mutability: AbiStateMutability
 }
 
+type AbiEventKind = 'nested' | 'data'
+
+export type AbiEventMember = {
+  name: string
+  type: string
+  kind: AbiEventKind
+}
+
 type AbiEventStruct = {
   type: 'event'
   name: string
   kind: 'struct'
-  members: readonly AbiParameter[]
+  members: readonly AbiEventMember[]
 }
 
 type AbiEventEnum = {
   type: 'event'
   name: string
   kind: 'enum'
-  variants: readonly AbiParameter[]
+  variants: readonly AbiEventMember[]
 }
 
 type AbiEvent = AbiEventStruct | AbiEventEnum
@@ -221,6 +229,19 @@ export type ExtractAbiEnum<
   TEnumName extends ExtractAbiEnumNames<TAbi>,
 > = Extract<ExtractAbiEnums<TAbi>, { name: TEnumName }>
 
+export type ExtractAbiEvents<TAbi extends Abi> = Extract<
+  TAbi[number],
+  { type: 'event' }
+>
+
+export type ExtractAbiEventNames<TAbi extends Abi> =
+  ExtractAbiEvents<TAbi>['name']
+
+export type ExtractAbiEvent<
+  TAbi extends Abi,
+  TEventName extends ExtractAbiEventNames<TAbi>,
+> = Extract<ExtractAbiEvents<TAbi>, { name: TEventName }>
+
 // Question: why do we need TAbi extends Abi here, it's not used ?
 type PrimitiveTypeLookup<TAbi extends Abi> = {
   [_ in CairoFelt]: BigNumberish
@@ -278,6 +299,38 @@ type ObjectToUnion<T extends Record<string, any>> = {
   [K in keyof T]: { [Key in K]: T[K] }
 }[keyof T]
 
+export type EventToPrimitiveType<
+  TAbi extends Abi,
+  TEventName extends ExtractAbiEventNames<TAbi>,
+> = ExtractAbiEvent<TAbi, TEventName> extends {
+  type: 'event'
+  kind: 'struct'
+  members: infer TMembers extends readonly AbiEventMember[]
+}
+  ? {
+      [Member in TMembers[number] as Member['name']]: StringToPrimitiveType<
+        TAbi,
+        Member['type']
+      >
+    }
+  : ExtractAbiEvent<TAbi, TEventName> extends {
+      type: 'event'
+      kind: 'enum'
+      variants: infer TVariants extends readonly AbiEventMember[]
+    }
+  ? ObjectToUnion<{
+      [Variant in TVariants[number] as Variant['name']]: StringToPrimitiveType<
+        TAbi,
+        Variant['type']
+      >
+    }>
+  : never
+
+export type StringToPrimitiveTypeS<
+  TAbi extends Abi,
+  T extends string,
+> = ExtractAbiEnum<TAbi, T>
+
 export type StringToPrimitiveType<
   TAbi extends Abi,
   T extends string,
@@ -287,36 +340,38 @@ export type StringToPrimitiveType<
   ? GenericTypeToPrimitiveType<TAbi, T>
   : T extends CairoTuple
   ? CairoTupleToPrimitive<TAbi, T>
-  : ExtractAbiStruct<TAbi, T> extends never
-  ? ExtractAbiEnum<TAbi, T> extends never
-    ? unknown
-    : ExtractAbiEnum<TAbi, T> extends {
-        type: 'enum'
-        variants: infer TVariants extends readonly AbiParameter[]
+  : ExtractAbiEvent<TAbi, T> extends never
+  ? ExtractAbiStruct<TAbi, T> extends never
+    ? ExtractAbiEnum<TAbi, T> extends never
+      ? unknown
+      : ExtractAbiEnum<TAbi, T> extends {
+          type: 'enum'
+          variants: infer TVariants extends readonly AbiParameter[]
+        }
+      ? ObjectToUnion<{
+          [Variant in
+            TVariants[number] as Variant['name']]: StringToPrimitiveType<
+            TAbi,
+            Variant['type']
+          >
+        }>
+      : // We should never have a type T where ExtractAbiEnum<TAbi, T>
+        // return something different than an enum
+        never
+    : ExtractAbiStruct<TAbi, T> extends {
+        type: 'struct'
+        members: infer TMembers extends readonly AbiMember[]
       }
-    ? ObjectToUnion<{
-        [Variant in
-          TVariants[number] as Variant['name']]: StringToPrimitiveType<
+    ? {
+        [Member in TMembers[number] as Member['name']]: StringToPrimitiveType<
           TAbi,
-          Variant['type']
+          Member['type']
         >
-      }>
-    : // We should never have a type T where ExtractAbiEnum<TAbi, T>
-      // return something different than an enum
+      }
+    : // We should never have a type T where ExtractAbiStruct<TAbi, T>
+      // return something different than a struct
       never
-  : ExtractAbiStruct<TAbi, T> extends {
-      type: 'struct'
-      members: infer TMembers extends readonly AbiMember[]
-    }
-  ? {
-      [Member in TMembers[number] as Member['name']]: StringToPrimitiveType<
-        TAbi,
-        Member['type']
-      >
-    }
-  : // We should never have a type T where ExtractAbiStruct<TAbi, T>
-    // return something different than a struct
-    never
+  : EventToPrimitiveType<TAbi, T>
 
 type UnionToIntersection<Union> = (
   Union extends unknown
