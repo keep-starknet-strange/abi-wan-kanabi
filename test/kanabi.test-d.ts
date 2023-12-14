@@ -8,13 +8,19 @@ import {
   CairoTuple,
   CairoU256,
   CairoVoid,
+  ContractFunctions,
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
+  ExtractAbiFunctions,
+  ExtractAbiInterfaces,
   FunctionArgs,
+  FunctionCall,
+  FunctionCallWithArgs,
   FunctionRet,
   StringToPrimitiveType,
 } from '../kanabi'
 import { ABI } from './example'
+import { interfaces } from './interfaces'
 import { assertType, expectTypeOf, test } from 'vitest'
 
 type TAbi = typeof ABI
@@ -289,4 +295,18 @@ test('StringToPrimitiveType Errors', () => {
   assertType<StringToPrimitiveType<TAbi, CairoFunction>>(bigIntValue)
   // @ts-expect-error CairoVoid should be void
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue)
+})
+
+test('ContractFunctions', () => {
+  // @ts-expect-error
+  const contract: ContractFunctions<TAbi> = never
+
+  contract.fn_felt() // Call with args
+
+  contract.fn_felt(1, { parseRequest: true }) // Call withe invokeOptions
+  contract.fn_felt(['0x0', '0x1']) // call with CallData
+
+  contract.fn_out_simple_option()
+  contract.fn_out_simple_option({ parseResponse: true })
+  contract.fn_out_simple_option(['0x0', '0x1'])
 })
