@@ -374,13 +374,9 @@ export type FunctionCall<
   FunctionCallWithCallData<TAbi, TAbiFunction> &
   FunctionCallWithOptions<TAbi, TAbiFunction>
 
-export type ContractFunctions<TAbi extends Abi> = UnionToIntersection<
-  {
-    [K in
-      keyof ExtractAbiInterfaces<TAbi>['items']]: ExtractAbiInterfaces<TAbi>['items'][K] extends infer TAbiFunction extends AbiFunction
-      ? {
-          [K2 in TAbiFunction['name']]: FunctionCall<TAbi, TAbiFunction>
-        }
-      : never
-  }[number]
->
+export type ContractFunctions<TAbi extends Abi> = {
+  [K in ExtractAbiFunctionNames<TAbi>]: FunctionCall<
+    TAbi,
+    ExtractAbiFunction<TAbi, K>
+  >
+}

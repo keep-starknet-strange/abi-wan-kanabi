@@ -1,3 +1,4 @@
+import { TypedContract } from '..'
 import {
   AbiTypeToPrimitiveType,
   CairoAddress,
@@ -8,19 +9,13 @@ import {
   CairoTuple,
   CairoU256,
   CairoVoid,
-  ContractFunctions,
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
-  ExtractAbiFunctions,
-  ExtractAbiInterfaces,
   FunctionArgs,
-  FunctionCall,
-  FunctionCallWithArgs,
   FunctionRet,
   StringToPrimitiveType,
 } from '../kanabi'
 import { ABI } from './example'
-import { interfaces } from './interfaces'
 import { assertType, expectTypeOf, test } from 'vitest'
 
 type TAbi = typeof ABI
@@ -299,12 +294,17 @@ test('StringToPrimitiveType Errors', () => {
 
 test('ContractFunctions', () => {
   // @ts-expect-error
-  const contract: ContractFunctions<TAbi> = never
+  const contract: TypedContract<TAbi> = never
 
-  contract.fn_felt() // Call with args
-
+  contract.fn_felt(1) // Call with args
   contract.fn_felt(1, { parseRequest: true }) // Call withe invokeOptions
   contract.fn_felt(['0x0', '0x1']) // call with CallData
+
+  // @ts-expect-error fn_felt argument should be BigNumberish (string | number | bigint)
+  contract.fn_felt(true)
+
+  // @ts-expect-error
+  contract.fn_felt(1, { wrong_call_option: true })
 
   contract.fn_out_simple_option()
   contract.fn_out_simple_option({ parseResponse: true })
