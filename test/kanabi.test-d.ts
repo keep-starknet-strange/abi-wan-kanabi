@@ -9,6 +9,7 @@ import {
   CairoTuple,
   CairoU256,
   CairoVoid,
+  EventToPrimitiveType,
   ExtractAbiFunction,
   ExtractAbiFunctionNames,
   FunctionArgs,
@@ -309,4 +310,37 @@ test('ContractFunctions', () => {
   contract.fn_out_simple_option()
   contract.fn_out_simple_option({ parseResponse: true })
   contract.fn_out_simple_option(['0x0', '0x1'])
+})
+
+test('StringToPrimitiveTypeEvent', () => {
+  // TODO: add tests for struct, enum and tuple
+  // Accept everything (unknown) for wrong types, this is done intentionally to
+  // avoid rejecting types when abiwan make a mistake, we'll probably alter this
+  // behavior when it gets mature enough
+  assertType<StringToPrimitiveType<TAbi, 'wrong_type_name'>>({
+    TestCounterIncreased: {
+      amount: 1,
+    },
+  })
+
+  assertType<StringToPrimitiveType<TAbi, 'example::example_contract::Event'>>({
+    TestCounterIncreased: {
+      amount: 1,
+    },
+  })
+  assertType<StringToPrimitiveType<TAbi, 'example::example_contract::Event'>>({
+    TestCounterDecreased: {
+      amount: 1,
+    },
+  })
+  assertType<StringToPrimitiveType<TAbi, 'example::example_contract::Event'>>({
+    TestEnum: {
+      Var1: {
+        member: 1,
+      },
+    },
+  })
+
+  // @ts-expect-error
+  assertType<EventToPrimitiveType<TAbi, 'wrong_event'>>()
 })
