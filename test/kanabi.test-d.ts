@@ -1,3 +1,4 @@
+import { TypedContract } from '..'
 import {
   AbiTypeToPrimitiveType,
   CairoAddress,
@@ -290,6 +291,25 @@ test('StringToPrimitiveType Errors', () => {
   assertType<StringToPrimitiveType<TAbi, CairoFunction>>(bigIntValue)
   // @ts-expect-error CairoVoid should be void
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue)
+})
+
+test('ContractFunctions', () => {
+  // @ts-expect-error
+  const contract: TypedContract<TAbi> = never
+
+  contract.fn_felt(1) // Call with args
+  contract.fn_felt(1, { parseRequest: true }) // Call withe invokeOptions
+  contract.fn_felt(['0x0', '0x1']) // call with CallData
+
+  // @ts-expect-error fn_felt argument should be BigNumberish (string | number | bigint)
+  contract.fn_felt(true)
+
+  // @ts-expect-error
+  contract.fn_felt(1, { wrong_call_option: true })
+
+  contract.fn_out_simple_option()
+  contract.fn_out_simple_option({ parseResponse: true })
+  contract.fn_out_simple_option(['0x0', '0x1'])
 })
 
 test('StringToPrimitiveTypeEvent', () => {

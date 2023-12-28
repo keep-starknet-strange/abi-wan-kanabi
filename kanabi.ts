@@ -416,25 +416,22 @@ export type FunctionCallWithOptions<
   TAbiFunction extends AbiFunction,
 > = TAbiFunction['state_mutability'] extends 'view'
   ? (
-      options?: CallOptions,
-      ...args: ExtractArgs<TAbi, TAbiFunction>
+      ...args: [...ExtractArgs<TAbi, TAbiFunction>, CallOptions]
     ) => Promise<FunctionRet<TAbi, TAbiFunction['name']>>
   : (
-      options?: InvokeOptions,
-      ...args: ExtractArgs<TAbi, TAbiFunction>
+      ...args: [...ExtractArgs<TAbi, TAbiFunction>, InvokeOptions]
     ) => InvokeFunctionResponse
 
-export type ContractFunctions<TAbi extends Abi> = UnionToIntersection<
-  {
-    [K in keyof TAbi]: TAbi[K] extends infer TAbiFunction extends AbiFunction
-      ? {
-          [K2 in TAbiFunction['name']]: FunctionCallWithArgs<
-            TAbi,
-            TAbiFunction
-          > &
-            FunctionCallWithCallData<TAbi, TAbiFunction> &
-            FunctionCallWithOptions<TAbi, TAbiFunction>
-        }
-      : never
-  }[number]
->
+export type FunctionCall<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = FunctionCallWithArgs<TAbi, TAbiFunction> &
+  FunctionCallWithCallData<TAbi, TAbiFunction> &
+  FunctionCallWithOptions<TAbi, TAbiFunction>
+
+export type ContractFunctions<TAbi extends Abi> = {
+  [K in ExtractAbiFunctionNames<TAbi>]: FunctionCall<
+    TAbi,
+    ExtractAbiFunction<TAbi, K>
+  >
+}
