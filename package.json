@@ -17,7 +17,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com/ivpavici/abi-wan-kanabi.git"
   },
-  "keywords": ["abi", "cairo"],
+  "keywords": [
+    "abi",
+    "cairo"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {

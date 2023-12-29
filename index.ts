@@ -8,6 +8,8 @@ import {
 
 export { type Abi } from './kanabi'
 
+export { type Config } from './config'
+
 export function call<
   TAbi extends Abi,
   TFunctionName extends ExtractAbiFunctionNames<TAbi>,

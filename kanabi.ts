@@ -1,11 +1,4 @@
-import {
-  BigNumberish,
-  CallOptions,
-  Calldata,
-  InvokeFunctionResponse,
-  InvokeOptions,
-  Uint256,
-} from './starknet'
+import { ResolvedConfig } from './config'
 
 export type CairoFelt = 'core::felt252'
 type MBits = 8 | 16 | 32
@@ -49,13 +42,23 @@ type AbiType =
 // We have to use string to support nesting
 type CairoOptionGeneric<T extends string> = `core::option::Option::<${T}>`
 type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>`
-type CairoGeneric<T extends string> =
+type CairoResultGeneric<
+  T extends string,
+  E extends string,
+> = `core::result::Result::<${T}, ${E}>`
+type CairoGeneric<T extends string, E extends string> =
   | CairoOptionGeneric<T>
   | CairoArrayGeneric<T>
+  | CairoResultGeneric<T, E>
 
-// Note that Option<Option<number>> = T | undefined | undefined which is the same
-// as Option<Option<number>, is this what we want for Option ?
-export type Option<T> = T | undefined
+export type Option<T> = ResolvedConfig<T>['Option']
+export type Tuple = ResolvedConfig['Tuple']
+export type Result<T, E> = ResolvedConfig<any, T, E>['Result']
+export type Enum = ResolvedConfig['Enum']
+export type Calldata = ResolvedConfig['Calldata']
+export type InvokeOptions = ResolvedConfig['InvokeOptions']
+export type CallOptions = ResolvedConfig['CallOptions']
+export type InvokeFunctionResponse = ResolvedConfig['InvokeFunctionResponse']
 
 type AbiParameter = {
   name: string
@@ -94,7 +97,7 @@ type AbiFunction = {
   state_mutability: AbiStateMutability
 }
 
-type AbiEventKind = 'nested' | 'data'
+type AbiEventKind = 'nested' | 'data' | 'key'
 
 export type AbiEventMember = {
   name: string
@@ -244,19 +247,19 @@ export type ExtractAbiEvent<
 
 // Question: why do we need TAbi extends Abi here, it's not used ?
 type PrimitiveTypeLookup<TAbi extends Abi> = {
-  [_ in CairoFelt]: BigNumberish
+  [_ in CairoFelt]: ResolvedConfig['FeltType']
 } & {
   [_ in CairoFunction]: number
 } & {
-  [_ in CairoInt]: number | bigint
+  [_ in CairoInt]: ResolvedConfig['IntType']
 } & {
-  [_ in CairoU256]: number | bigint | Uint256
+  [_ in CairoU256]: ResolvedConfig['U256Type']
 } & {
-  [_ in CairoBigInt]: number | bigint
+  [_ in CairoBigInt]: ResolvedConfig['BigIntType']
 } & {
-  [_ in CairoAddress]: string
+  [_ in CairoAddress]: ResolvedConfig['AddressType']
 } & {
-  [_ in CairoClassHash]: string
+  [_ in CairoClassHash]: ResolvedConfig['ClassHashType']
 } & {
   [_ in CairoVoid]: void
 } & {
@@ -279,6 +282,12 @@ export type GenericTypeToPrimitiveType<
   ? T extends AbiType
     ? AbiTypeToPrimitiveType<TAbi, T>[]
     : StringToPrimitiveType<TAbi, T>[]
+  : G extends CairoResultGeneric<infer T, infer E>
+  ? T extends AbiType
+    ? E extends AbiType
+      ? Result<AbiTypeToPrimitiveType<TAbi, T>, AbiTypeToPrimitiveType<TAbi, E>>
+      : Result<AbiTypeToPrimitiveType<TAbi, T>, StringToPrimitiveType<TAbi, E>>
+    : Result<StringToPrimitiveType<TAbi, T>, StringToPrimitiveType<TAbi, E>>
   : unknown
 
 export type CairoTupleToPrimitive<
@@ -336,18 +345,20 @@ export type StringToPrimitiveType<
   T extends string,
 > = T extends AbiType
   ? AbiTypeToPrimitiveType<TAbi, T>
-  : T extends CairoGeneric<infer _>
+  : T extends CairoGeneric<infer _, infer _>
   ? GenericTypeToPrimitiveType<TAbi, T>
   : T extends CairoTuple
-  ? CairoTupleToPrimitive<TAbi, T>
-  : ExtractAbiEvent<TAbi, T> extends never
-  ? ExtractAbiStruct<TAbi, T> extends never
-    ? ExtractAbiEnum<TAbi, T> extends never
-      ? unknown
-      : ExtractAbiEnum<TAbi, T> extends {
-          type: 'enum'
-          variants: infer TVariants extends readonly AbiParameter[]
-        }
+  ? Tuple extends never
+    ? CairoTupleToPrimitive<TAbi, T>
+    : Tuple
+  : ExtractAbiStruct<TAbi, T> extends never
+  ? ExtractAbiEnum<TAbi, T> extends never
+    ? unknown
+    : Enum extends never
+    ? ExtractAbiEnum<TAbi, T> extends {
+        type: 'enum'
+        variants: infer TVariants extends readonly AbiParameter[]
+      }
       ? ObjectToUnion<{
           [Variant in
             TVariants[number] as Variant['name']]: StringToPrimitiveType<
@@ -358,20 +369,20 @@ export type StringToPrimitiveType<
       : // We should never have a type T where ExtractAbiEnum<TAbi, T>
         // return something different than an enum
         never
-    : ExtractAbiStruct<TAbi, T> extends {
-        type: 'struct'
-        members: infer TMembers extends readonly AbiMember[]
-      }
-    ? {
-        [Member in TMembers[number] as Member['name']]: StringToPrimitiveType<
-          TAbi,
-          Member['type']
-        >
-      }
-    : // We should never have a type T where ExtractAbiStruct<TAbi, T>
-      // return something different than a struct
-      never
-  : EventToPrimitiveType<TAbi, T>
+    : Enum
+  : ExtractAbiStruct<TAbi, T> extends {
+      type: 'struct'
+      members: infer TMembers extends readonly AbiMember[]
+    }
+  ? {
+      [Member in TMembers[number] as Member['name']]: StringToPrimitiveType<
+        TAbi,
+        Member['type']
+      >
+    }
+  : // We should never have a type T where ExtractAbiStruct<TAbi, T>
+    // return something different than a struct
+    never
 
 type UnionToIntersection<Union> = (
   Union extends unknown
