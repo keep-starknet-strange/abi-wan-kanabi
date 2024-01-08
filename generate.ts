@@ -21,8 +21,14 @@ const argv = yargs
 
 async function run() {
   const json: { abi: object } = await fs.readJson(argv.input)
+  let abi = json.abi
+
+  if (typeof abi === 'string') {
+    abi = JSON.parse(abi)
+  }
+
   const content = `export const ABI = ${JSON.stringify(
-    json.abi,
+    abi,
     null,
     2,
   )} as const;\n`
