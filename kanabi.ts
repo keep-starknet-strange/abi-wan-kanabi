@@ -97,7 +97,10 @@ type AbiFunction = {
   state_mutability: AbiStateMutability
 }
 
-type AbiEventKind = 'nested' | 'data' | 'key'
+// TODO: Do we need to handle 'key' and 'data' differently ?
+// TODO: 'flat' is found in some ABIs but it's not mentioned in the ABI spec:
+// https://github.com/starkware-libs/starknet-specs/blob/master/api/starknet_metadata.json#L507:L509
+type AbiEventKind = 'nested' | 'data' | 'key' | 'flat'
 
 export type AbiEventMember = {
   name: string
