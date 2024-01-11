@@ -1,5 +1,6 @@
 import {
   BigNumberish,
+  Call,
   CallOptions,
   Calldata,
   InvokeFunctionResponse,
@@ -431,6 +432,20 @@ export type FunctionCall<
 
 export type ContractFunctions<TAbi extends Abi> = {
   [K in ExtractAbiFunctionNames<TAbi>]: FunctionCall<
+    TAbi,
+    ExtractAbiFunction<TAbi, K>
+  >
+}
+
+export type FunctionPopulateTransaction<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = (
+      ...args: [...ExtractArgs<TAbi, TAbiFunction>]
+    ) => Call
+
+export type ContractFunctionsPopulateTransaction<TAbi extends Abi> = {
+  [K in ExtractAbiFunctionNames<TAbi>]: FunctionPopulateTransaction<
     TAbi,
     ExtractAbiFunction<TAbi, K>
   >

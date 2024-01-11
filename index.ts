@@ -1,10 +1,12 @@
 import {
   Abi,
   ContractFunctions,
+  ContractFunctionsPopulateTransaction,
   ExtractAbiFunctionNames,
   FunctionArgs,
   FunctionRet,
 } from './kanabi'
+import { Call } from './starknet'
 
 export { type Abi } from './kanabi'
 
@@ -24,6 +26,11 @@ type TypedCall<TAbi extends Abi> = {
     method: TFunctionName,
     args?: FunctionArgs<TAbi, TFunctionName>,
   ): Promise<FunctionRet<TAbi, TFunctionName>>
+  populate<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
+    method: TFunctionName,
+    args?: FunctionArgs<TAbi, TFunctionName>,
+  ): Call
+  populateTransaction: ContractFunctionsPopulateTransaction<TAbi>
 }
 
 export type TypedContract<TAbi extends Abi> = TypedCall<TAbi> &

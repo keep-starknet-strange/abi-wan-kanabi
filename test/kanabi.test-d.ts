@@ -312,6 +312,25 @@ test('ContractFunctions', () => {
   contract.fn_out_simple_option(['0x0', '0x1'])
 })
 
+test('ContractFunctionsPopulateTransaction', () => {
+  // @ts-expect-error
+  const contract: TypedContract<TAbi> = never
+
+  // @ts-expect-error
+  contract.populateTransaction.fn_felt()
+  contract.populateTransaction.fn_felt(1)
+  contract.populateTransaction.fn_simple_array([1, 2, 3])
+
+})
+
+test("populate", () => {
+  // @ts-expect-error
+  const contract: TypedContract<TAbi> = never
+
+  contract.populate("fn_felt", 1n)
+  contract.populate("fn_felt_u8_bool", [1n, 2, true])
+})
+
 test('StringToPrimitiveTypeEvent', () => {
   // TODO: add tests for struct, enum and tuple
   // Accept everything (unknown) for wrong types, this is done intentionally to
