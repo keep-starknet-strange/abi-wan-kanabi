@@ -59,6 +59,7 @@ export type Calldata = ResolvedConfig['Calldata']
 export type InvokeOptions = ResolvedConfig['InvokeOptions']
 export type CallOptions = ResolvedConfig['CallOptions']
 export type InvokeFunctionResponse = ResolvedConfig['InvokeFunctionResponse']
+export type Call = ResolvedConfig['Call']
 
 type AbiParameter = {
   name: string
@@ -445,6 +446,18 @@ export type FunctionCall<
 
 export type ContractFunctions<TAbi extends Abi> = {
   [K in ExtractAbiFunctionNames<TAbi>]: FunctionCall<
+    TAbi,
+    ExtractAbiFunction<TAbi, K>
+  >
+}
+
+export type FunctionPopulateTransaction<
+  TAbi extends Abi,
+  TAbiFunction extends AbiFunction,
+> = (...args: [...ExtractArgs<TAbi, TAbiFunction>]) => Call
+
+export type ContractFunctionsPopulateTransaction<TAbi extends Abi> = {
+  [K in ExtractAbiFunctionNames<TAbi>]: FunctionPopulateTransaction<
     TAbi,
     ExtractAbiFunction<TAbi, K>
   >

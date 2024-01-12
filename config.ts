@@ -8,6 +8,12 @@ export type U256 = {
   low: bigint
   high: bigint
 }
+export type Calldata = string[] & { readonly __compiled__?: boolean }
+export type Call = {
+  contractAddress: string
+  entrypoint: string
+  calldata?: Calldata
+}
 
 export type Config<OptionT = any, OkT = any, ErrT = any> = {}
 
@@ -89,6 +95,18 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
     : DefaultConfig<OptionT>['Calldata']
 
   /**
+   * TypeScript type to use for populate return values
+   * @default {
+      contractAddress: string
+      entrypoint: string
+      calldata?: Calldata
+    }
+   */
+  Call: Config extends { Call: infer type }
+    ? type
+    : DefaultConfig<OptionT>['Call']
+
+  /**
    * TypeScript type to use for CallOptions used in function calls
    * @default unknown
    */
@@ -127,7 +145,8 @@ export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
   /** By default, abiwan infer the types of the enum and return a union of objects */
   Enum: never
 
-  Calldata: string[] & { readonly __compiled__?: boolean }
+  Calldata: Calldata
+  Call: Call
   CallOptions: unknown
   InvokeOptions: unknown
   InvokeFunctionResponse: unknown

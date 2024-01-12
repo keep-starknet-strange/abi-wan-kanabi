@@ -1,14 +1,15 @@
+import { ResolvedConfig } from './config'
 import {
   Abi,
+  Call,
   ContractFunctions,
+  ContractFunctionsPopulateTransaction,
   ExtractAbiFunctionNames,
   FunctionArgs,
   FunctionRet,
 } from './kanabi'
 
 export { type Abi } from './kanabi'
-
-export { type Config } from './config'
 
 export function call<
   TAbi extends Abi,
@@ -21,12 +22,17 @@ export function call<
   throw new Error('todo')
 }
 
-type TypedCall<TAbi extends Abi> = {
+type TypedContractActions<TAbi extends Abi> = {
   call<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
     method: TFunctionName,
     args?: FunctionArgs<TAbi, TFunctionName>,
   ): Promise<FunctionRet<TAbi, TFunctionName>>
+  populate<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
+    method: TFunctionName,
+    args?: FunctionArgs<TAbi, TFunctionName>,
+  ): Call
+  populateTransaction: ContractFunctionsPopulateTransaction<TAbi>
 }
 
-export type TypedContract<TAbi extends Abi> = TypedCall<TAbi> &
+export type TypedContract<TAbi extends Abi> = TypedContractActions<TAbi> &
   ContractFunctions<TAbi>

@@ -109,12 +109,12 @@ test('FunctionArgs', () => {
     { tuple: [intValue, intValue] },
   ])
 
-  assertType<FunctionArgs<TAbi, 'fn_result'>>({Ok: bigIntValue})
-  assertType<FunctionArgs<TAbi, 'fn_result'>>({Err: intValue})
+  assertType<FunctionArgs<TAbi, 'fn_result'>>({ Ok: bigIntValue })
+  assertType<FunctionArgs<TAbi, 'fn_result'>>({ Err: intValue })
 
-  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({Ok: intValue})
-  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({Ok: undefined})
-  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({Err: bigIntValue})
+  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Ok: intValue })
+  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Ok: undefined })
+  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Err: bigIntValue })
 })
 
 test('FunctionArgs Errors', () => {
@@ -149,13 +149,13 @@ test('FunctionArgs Errors', () => {
   // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_out_enum_array'>>([intValue])
   // @ts-expect-error
-  assertType<FunctionArgs<TAbi, 'fn_result'>>({Ok: voidValue})
+  assertType<FunctionArgs<TAbi, 'fn_result'>>({ Ok: voidValue })
   // @ts-expect-error
-  assertType<FunctionArgs<TAbi, 'fn_result'>>({Err: boolValue})
+  assertType<FunctionArgs<TAbi, 'fn_result'>>({ Err: boolValue })
   // @ts-expect-error
-  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({Ok: emptyArray})
+  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Ok: emptyArray })
   // @ts-expect-error
-  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({Err: stringValue})
+  assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Err: stringValue })
 })
 
 test('FunctionRet', () => {
@@ -182,8 +182,8 @@ test('FunctionRet', () => {
     { tuple: [intValue, intValue] },
   ])
 
-  assertType<FunctionRet<TAbi, 'fn_out_result'>>({Ok: intValue})
-  assertType<FunctionRet<TAbi, 'fn_out_result'>>({Err: bigIntValue})
+  assertType<FunctionRet<TAbi, 'fn_out_result'>>({ Ok: intValue })
+  assertType<FunctionRet<TAbi, 'fn_out_result'>>({ Err: bigIntValue })
 })
 
 test('FunctionRet Errors', () => {
@@ -211,9 +211,9 @@ test('FunctionRet Errors', () => {
   // @ts-expect-error
   assertType<FunctionRet<TAbi, 'fn_out_simple_option'>>(voidValue)
   // @ts-expect-error
-  assertType<FunctionRet<TAbi, 'fn_out_result'>>({Ok: stringValue})
+  assertType<FunctionRet<TAbi, 'fn_out_result'>>({ Ok: stringValue })
   // @ts-expect-error
-  assertType<FunctionRet<TAbi, 'fn_out_result'>>({Err: emptyArray})
+  assertType<FunctionRet<TAbi, 'fn_out_result'>>({ Err: emptyArray })
 })
 
 test('ExtractAbiFunction', () => {
@@ -332,6 +332,24 @@ test('ContractFunctions', () => {
   contract.fn_out_simple_option()
   contract.fn_out_simple_option({ parseResponse: true })
   contract.fn_out_simple_option(['0x0', '0x1'])
+})
+
+test('ContractFunctionsPopulateTransaction', () => {
+  // @ts-expect-error
+  const contract: TypedContract<TAbi> = never
+
+  // @ts-expect-error
+  contract.populateTransaction.fn_felt()
+  contract.populateTransaction.fn_felt(1)
+  contract.populateTransaction.fn_simple_array([1, 2, 3])
+})
+
+test('populate', () => {
+  // @ts-expect-error
+  const contract: TypedContract<TAbi> = never
+
+  contract.populate('fn_felt', 1n)
+  contract.populate('fn_felt_u8_bool', [1n, 2, true])
 })
 
 test('StringToPrimitiveTypeEvent', () => {

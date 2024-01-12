@@ -53,6 +53,36 @@ Currently supported:
 | [1.0.3](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.3) | [Cairo v1.0.0](https://github.com/starkware-libs/cairo/releases/tag/v1.0.0) <br> [Cairo v1.1.0](https://github.com/starkware-libs/cairo/releases/tag/v1.1.0) |
 | [2.0.0](https://www.npmjs.com/package/abi-wan-kanabi/v/2.0.0) | [Cairo v2.3.0-rc0](https://github.com/starkware-libs/cairo/releases/tag/v2.3.0-rc0)                                                                          |
 
+### Usage with `starknet.js`
+
+Let's say you want to interact with the [Ekubu: Core](https://starkscan.co/contract/0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b) contract using starknet.js, using abiwan you can get the correct types for the contract's functions
+
+You need to first get the **Abi** of the contract and export it in a typescript file, you can do so using one command combining both [`starkli`](https://github.com/xJonathanLEI/starkli) (tested with version 0.2.3) and `npx abi-wan-kanabi`:
+```bash
+starkli class-at "0x0000000dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b" --network mainnet | npx abi-wan-kanabi --input /dev/stdin --output abi.ts
+```
+
+The command will get the contract class from the network, and pipe it to abiwan, which will generate  `abi.ts` with `export const ABI = [YOUR ABI HERE]` that we'll import later to get type information, the command will also print a helpful snippet that you can use to get started
+
+```javascript
+import { Contract, RpcProvider, constants } from 'starknet';
+import { ABI } from './abi';
+
+async function main() {
+    const address = "CONTRACT_ADDRESS_HERE";
+    const provider = new RpcProvider({ nodeUrl: constants.NetworkName.SN_MAIN });
+    const contract = new Contract(ABI, address, provider).typedv2(ABI);
+
+    const version = await contract.getVersion();
+    console.log("version", version)
+
+    // Abiwan is now successfully installed, just start writing your contract
+    // function calls (`const ret  = contract.your_function()`) and you'll get
+    // helpful editor autocompletion, linting errors ...
+}
+main().catch(console.error)
+```
+
 ### Build
 
 To use abiwan, you must first generate types from your contracts' ABI json files, you can use the helper script:
