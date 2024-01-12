@@ -6,8 +6,12 @@
   "bin": {
     "generate": "./dist/generate.js"
   },
+  "files": ["dist"],
   "scripts": {
-    "generate": "tsc && node dist/generate.js",
+    "build": "tsc && cp starknet.d.ts dist/starknet.d.ts",
+    "clean": "rm -rf dist",
+    "prepack": "npm run clean && npm run build",
+    "generate": "npm run build && node dist/generate.js",
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "typecheck": "vitest typecheck",
