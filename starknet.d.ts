@@ -22,6 +22,12 @@ export interface InvokeFunctionResponse {
  */
 export type Calldata = string[] & { readonly __compiled__?: boolean }
 
+export type Call = {
+  contractAddress: string;
+  entrypoint: string;
+  calldata?: Calldata;
+}
+
 export type WeierstrassSignatureType = any
 export type ArraySignatureType = string[]
 export type Signature = ArraySignatureType | WeierstrassSignatureType
