@@ -59,7 +59,7 @@ Let's say you want to interact with the [Ekubu: Core](https://starkscan.co/contr
 
 You need to first get the **Abi** of the contract and export it in a typescript file, you can do so using one command combining both [`starkli`](https://github.com/xJonathanLEI/starkli) (tested with version 0.2.3) and `npx abi-wan-kanabi`:
 ```bash
-starkli class-at "0x0000000dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b" --network mainnet | npx abi-wan-kanabi --input /dev/stdin --output abi.ts
+starkli class-at "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b" --network mainnet | npx abi-wan-kanabi --input /dev/stdin --output abi.ts
 ```
 
 The command will get the contract class from the network, and pipe it to abiwan, which will generate  `abi.ts` with `export const ABI = [YOUR ABI HERE]` that we'll import later to get type information, the command will also print a helpful snippet that you can use to get started
