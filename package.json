@@ -6,7 +6,6 @@
   "bin": {
     "generate": "./dist/generate.js"
   },
-  "files": ["dist"],
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
