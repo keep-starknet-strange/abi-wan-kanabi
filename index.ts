@@ -21,7 +21,7 @@ export function call<
   throw new Error('todo')
 }
 
-type TypedCall<TAbi extends Abi> = {
+type TypedContractActions<TAbi extends Abi> = {
   call<TFunctionName extends ExtractAbiFunctionNames<TAbi>>(
     method: TFunctionName,
     args?: FunctionArgs<TAbi, TFunctionName>,
@@ -33,5 +33,5 @@ type TypedCall<TAbi extends Abi> = {
   populateTransaction: ContractFunctionsPopulateTransaction<TAbi>
 }
 
-export type TypedContract<TAbi extends Abi> = TypedCall<TAbi> &
+export type TypedContract<TAbi extends Abi> = TypedContractActions<TAbi> &
   ContractFunctions<TAbi>
