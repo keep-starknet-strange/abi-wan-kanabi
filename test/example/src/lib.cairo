@@ -44,6 +44,12 @@ trait IExampleContract<TContractState> {
     fn fn_enum_array(self: @TContractState, arg: Array<TestEnum>);
 
     fn fn_out_enum_array(self: @TContractState, ) -> Array<TestEnum>;
+
+    fn fn_result(self: @TContractState, arg: Result<u8, u8>);
+
+    fn fn_out_result(self: @TContractState) -> Result<u8, u8>;
+
+    fn fn_nested_result(self: @TContractState, arg: Result<Option<u8>, u8>);
 }
 
 #[starknet::contract]
@@ -137,5 +143,11 @@ mod example_contract {
             messages.append(TestEnum::tuple((10_u32, 30_u32)));
             messages
         }
+
+        fn fn_result(self: @ContractState, arg: Result<u8, u8>) {}
+        fn fn_out_result(self: @ContractState) -> Result<u8, u8> {
+            Result::Ok(0)
+        }
+        fn fn_nested_result(self: @ContractState, arg: Result<Option<u8>, u8>) {}
     }
 }

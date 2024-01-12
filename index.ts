@@ -1,12 +1,13 @@
+export { Config, DefaultConfig, ResolvedConfig } from './config'
 import {
   Abi,
+  Call,
   ContractFunctions,
   ContractFunctionsPopulateTransaction,
   ExtractAbiFunctionNames,
   FunctionArgs,
   FunctionRet,
 } from './kanabi'
-import { Call } from './starknet'
 
 export { type Abi } from './kanabi'
 
