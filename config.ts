@@ -19,7 +19,7 @@ export type Config<OptionT = any, OkT = any, ErrT = any> = {}
 
 export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
   /**
-   * TypeScript type to use for `ContractAddress` values
+   * TypeScript type to use for `ContractAddress` and `EthAddress` values
    * @default `0x${string}`
    */
   AddressType: Config extends { AddressType: infer type }

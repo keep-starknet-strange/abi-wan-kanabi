@@ -126,6 +126,7 @@ Abiwan supports all of Cairo types, here's the mapping between Cairo types and T
 | `u8 - u32`         | `number \| bigint`           |
 | `u64 - u256`       | `number \| bigint \| U256`   |
 | `ContractAddress`  | `string`                     |
+| `EthAddress`       | `string`                     |
 | `ClassHash`        | `string`                     |
 | `bool`             | `boolean`                    |
 | `()`               | `void`                       |
@@ -136,6 +137,7 @@ Abiwan supports all of Cairo types, here's the mapping between Cairo types and T
 | ------------------------- | --------------------------------------------------- |
 | `Option<T>`               | `T \| undefined`                                    |
 | `Array<T>`                | `T[]`                                               |
+| `Span<T>`                 | `T[]`                                               |
 | `tuple (T1, T2, ..., Tn)` | `[T1, T2, ..., Tn]`                                 |
 | `struct`                  | an object where keys are struct member names        |
 | `enum`                    | a union of objects, each enum variant is an object  |
