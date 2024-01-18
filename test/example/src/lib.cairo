@@ -1,4 +1,5 @@
 use starknet::ContractAddress;
+use starknet::EthAddress;
 
 #[derive(Drop, Serde)]
 struct TestStruct {
@@ -50,11 +51,14 @@ trait IExampleContract<TContractState> {
     fn fn_out_result(self: @TContractState) -> Result<u8, u8>;
 
     fn fn_nested_result(self: @TContractState, arg: Result<Option<u8>, u8>);
+
+    fn fn_eth_address(self: @TContractState, arg: EthAddress);
 }
 
 #[starknet::contract]
 mod example_contract {
     use starknet::ContractAddress;
+    use starknet::EthAddress;
     use starknet::get_caller_address;
     use example::TestStruct;
     use example::TestEnum;
@@ -149,5 +153,7 @@ mod example_contract {
             Result::Ok(0)
         }
         fn fn_nested_result(self: @ContractState, arg: Result<Option<u8>, u8>) {}
+
+        fn fn_eth_address(self: @ContractState, arg: EthAddress) {}
     }
 }

@@ -115,6 +115,16 @@ export const ABI = [
     ],
   },
   {
+    type: 'struct',
+    name: 'core::starknet::eth_address::EthAddress',
+    members: [
+      {
+        name: 'address',
+        type: 'core::felt252',
+      },
+    ],
+  },
+  {
     type: 'interface',
     name: 'example::IExampleContract',
     items: [
@@ -324,6 +334,18 @@ export const ABI = [
           {
             name: 'arg',
             type: 'core::result::Result::<core::option::Option::<core::integer::u8>, core::integer::u8>',
+          },
+        ],
+        outputs: [],
+        state_mutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'fn_eth_address',
+        inputs: [
+          {
+            name: 'arg',
+            type: 'core::starknet::eth_address::EthAddress',
           },
         ],
         outputs: [],

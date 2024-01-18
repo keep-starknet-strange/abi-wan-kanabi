@@ -6,7 +6,8 @@ type BigMBits = 64 | 128
 export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
 export type CairoU256 = 'core::integer::u256'
-export type CairoAddress = 'core::starknet::contract_address::ContractAddress'
+export type CairoContractAddress = 'core::starknet::contract_address::ContractAddress'
+export type CairoEthAddress = 'core::starknet::eth_address::EthAddress'
 export type CairoClassHash = 'core::starknet::class_hash::ClassHash'
 export type CairoFunction = 'function'
 export type CairoVoid = '()'
@@ -34,7 +35,8 @@ type AbiType =
   | CairoInt
   | CairoBigInt
   | CairoU256
-  | CairoAddress
+  | CairoContractAddress
+  | CairoEthAddress
   | CairoClassHash
   | CairoBool
   | CairoVoid
@@ -261,7 +263,9 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 } & {
   [_ in CairoBigInt]: ResolvedConfig['BigIntType']
 } & {
-  [_ in CairoAddress]: ResolvedConfig['AddressType']
+  [_ in CairoContractAddress]: ResolvedConfig['AddressType']
+} & {
+  [_ in CairoEthAddress]: ResolvedConfig['AddressType']
 } & {
   [_ in CairoClassHash]: ResolvedConfig['ClassHashType']
 } & {
