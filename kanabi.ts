@@ -43,7 +43,7 @@ type AbiType =
 
 // We have to use string to support nesting
 type CairoOptionGeneric<T extends string> = `core::option::Option::<${T}>`
-type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>`
+type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>` | `core::array::Span::<${T}>`
 type CairoResultGeneric<
   T extends string,
   E extends string,

@@ -53,6 +53,8 @@ trait IExampleContract<TContractState> {
     fn fn_nested_result(self: @TContractState, arg: Result<Option<u8>, u8>);
 
     fn fn_eth_address(self: @TContractState, arg: EthAddress);
+
+    fn fn_span(self: @TContractState, arg: Span<TestStruct>);
 }
 
 #[starknet::contract]
@@ -155,5 +157,7 @@ mod example_contract {
         fn fn_nested_result(self: @ContractState, arg: Result<Option<u8>, u8>) {}
 
         fn fn_eth_address(self: @ContractState, arg: EthAddress) {}
+
+        fn fn_span(self: @ContractState, arg: Span<TestStruct>) {}
     }
 }

@@ -123,6 +123,10 @@ test('FunctionArgs', () => {
   assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Err: bigIntValue })
 
   assertType<FunctionArgs<TAbi, 'fn_eth_address'>>(stringValue)
+
+  assertType<FunctionArgs<TAbi, 'fn_span'>>([
+    { felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] },
+  ])
 })
 
 test('FunctionArgs Errors', () => {
@@ -166,6 +170,8 @@ test('FunctionArgs Errors', () => {
   assertType<FunctionArgs<TAbi, 'fn_nested_result'>>({ Err: stringValue })
   // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_eth_address'>>(voidValue)
+  // @ts-expect-error
+  assertType<FunctionArgs<TAbi, 'fn_span'>>([bigIntValue])
 })
 
 test('FunctionRet', () => {
@@ -265,6 +271,7 @@ test('ExtractAbiFunctionName', () => {
     | 'fn_out_result'
     | 'fn_nested_result'
     | 'fn_eth_address'
+    | 'fn_span'
 
   expectTypeOf<ExtractAbiFunctionNames<TAbi>>().toEqualTypeOf<Expected>()
 })

@@ -125,6 +125,16 @@ export const ABI = [
     ],
   },
   {
+    type: 'struct',
+    name: 'core::array::Span::<example::TestStruct>',
+    members: [
+      {
+        name: 'snapshot',
+        type: '@core::array::Array::<example::TestStruct>',
+      },
+    ],
+  },
+  {
     type: 'interface',
     name: 'example::IExampleContract',
     items: [
@@ -346,6 +356,18 @@ export const ABI = [
           {
             name: 'arg',
             type: 'core::starknet::eth_address::EthAddress',
+          },
+        ],
+        outputs: [],
+        state_mutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'fn_span',
+        inputs: [
+          {
+            name: 'arg',
+            type: 'core::array::Span::<example::TestStruct>',
           },
         ],
         outputs: [],
