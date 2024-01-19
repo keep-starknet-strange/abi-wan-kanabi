@@ -12,6 +12,8 @@ export type CairoClassHash = 'core::starknet::class_hash::ClassHash'
 export type CairoFunction = 'function'
 export type CairoVoid = '()'
 export type CairoBool = 'core::bool'
+export type CairoBytes31 = 'core::bytes_31::bytes31'
+export type CairoByteArray = 'core::byte_array::ByteArray'
 
 /// Implementation of tuples
 type MAX_TUPLE_SIZE = 20
@@ -40,6 +42,8 @@ type AbiType =
   | CairoClassHash
   | CairoBool
   | CairoVoid
+  | CairoBytes31
+  | CairoByteArray
 
 // We have to use string to support nesting
 type CairoOptionGeneric<T extends string> = `core::option::Option::<${T}>`
@@ -272,6 +276,10 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
   [_ in CairoVoid]: void
 } & {
   [_ in CairoBool]: boolean
+} & {
+  [_ in CairoBytes31]: ResolvedConfig['Bytes31Type']
+}& {
+  [_ in CairoByteArray]: ResolvedConfig['ByteArray']
 }
 
 export type AbiTypeToPrimitiveType<

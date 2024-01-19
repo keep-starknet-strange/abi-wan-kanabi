@@ -128,6 +128,8 @@ Abiwan supports all of Cairo types, here's the mapping between Cairo types and T
 | `ContractAddress`  | `string`                     |
 | `EthAddress`       | `string`                     |
 | `ClassHash`        | `string`                     |
+| `bytes31`          | `string`                     |
+| `ByteArray`        | `string`                     |
 | `bool`             | `boolean`                    |
 | `()`               | `void`                       |
 

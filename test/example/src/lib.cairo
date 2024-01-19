@@ -55,6 +55,10 @@ trait IExampleContract<TContractState> {
     fn fn_eth_address(self: @TContractState, arg: EthAddress);
 
     fn fn_span(self: @TContractState, arg: Span<TestStruct>);
+
+    fn fn_bytes31(self: @TContractState, arg: bytes31);
+
+    fn fn_byte_array(self: @TContractState, arg: ByteArray);
 }
 
 #[starknet::contract]
@@ -62,6 +66,7 @@ mod example_contract {
     use starknet::ContractAddress;
     use starknet::EthAddress;
     use starknet::get_caller_address;
+
     use example::TestStruct;
     use example::TestEnum;
     #[storage]
@@ -159,5 +164,9 @@ mod example_contract {
         fn fn_eth_address(self: @ContractState, arg: EthAddress) {}
 
         fn fn_span(self: @ContractState, arg: Span<TestStruct>) {}
+
+        fn fn_bytes31(self: @ContractState, arg: bytes31) {}
+
+        fn fn_byte_array(self: @ContractState, arg: ByteArray) {}
     }
 }

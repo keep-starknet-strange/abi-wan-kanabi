@@ -135,6 +135,24 @@ export const ABI = [
     ],
   },
   {
+    type: 'struct',
+    name: 'core::byte_array::ByteArray',
+    members: [
+      {
+        name: 'data',
+        type: 'core::array::Array::<core::bytes_31::bytes31>',
+      },
+      {
+        name: 'pending_word',
+        type: 'core::felt252',
+      },
+      {
+        name: 'pending_word_len',
+        type: 'core::integer::u32',
+      },
+    ],
+  },
+  {
     type: 'interface',
     name: 'example::IExampleContract',
     items: [
@@ -368,6 +386,30 @@ export const ABI = [
           {
             name: 'arg',
             type: 'core::array::Span::<example::TestStruct>',
+          },
+        ],
+        outputs: [],
+        state_mutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'fn_bytes31',
+        inputs: [
+          {
+            name: 'arg',
+            type: 'core::bytes_31::bytes31',
+          },
+        ],
+        outputs: [],
+        state_mutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'fn_byte_array',
+        inputs: [
+          {
+            name: 'arg',
+            type: 'core::byte_array::ByteArray',
           },
         ],
         outputs: [],

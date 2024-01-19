@@ -85,7 +85,23 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
    */
   Enum: Config extends { Enum: infer type }
     ? type
-    : DefaultConfig<OptionT>['Enum']
+    : DefaultConfig['Enum']
+  /**
+   * TypeScript type to use for bytes31
+   * @default string
+   */
+  Bytes31Type: Config extends { Bytes31Type: infer type }
+    ? type
+    : DefaultConfig['Bytes31Type']
+  /**
+   * TypeScript type to use for ByteArray
+   * @default string
+   */
+  ByteArray: Config extends { ByteArray: infer type }
+    ? type
+    : DefaultConfig['ByteArrayType']
+
+
   /**
    * TypeScript type to use for Calldata used in function calls
    * @default decimal-string array
@@ -139,11 +155,13 @@ export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
   U256Type: number | bigint | U256
   IntType: number | bigint
   Option: Option<OptionT>
-  /** By default, abiwan infer the types of the tuple element and return a TS tuple */
+  /** By default, abiwan will infer the types of the tuple element and return a TS tuple */
   Tuple: never
   Result: Result<OkT, ErrT>
-  /** By default, abiwan infer the types of the enum and return a union of objects */
+  /** By default, abiwan will infer the types of the enum and return a union of objects */
   Enum: never
+  Bytes31Type: string
+  ByteArrayType: string
 
   Calldata: Calldata
   Call: Call
