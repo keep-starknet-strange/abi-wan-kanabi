@@ -30,7 +30,7 @@ Abiwan will support multiple Cairo compiler versions, but not in parallel - diff
 | Abiwan                                                        | Cairo compiler                                                                                                                                               |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [1.0.3](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.3) | [Cairo v1.0.0](https://github.com/starkware-libs/cairo/releases/tag/v1.0.0) <br> [Cairo v1.1.0](https://github.com/starkware-libs/cairo/releases/tag/v1.1.0) |
-| [2.1.0](https://www.npmjs.com/package/abi-wan-kanabi/v/2.1.0) | [Cairo v2.3.0](https://github.com/starkware-libs/cairo/releases/tag/v2.3.0)                                                                                  |
+| [2.1.1](https://www.npmjs.com/package/abi-wan-kanabi/v/2.1.1) | [Cairo v2.3.0](https://github.com/starkware-libs/cairo/releases/tag/v2.3.0)                                                                                  |
 
 ## Getting Started
 
