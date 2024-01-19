@@ -1,4 +1,4 @@
-export { Config, DefaultConfig, ResolvedConfig } from './config'
+export type { Config, DefaultConfig, ResolvedConfig } from './config'
 import {
   Abi,
   Call,
