@@ -7,10 +7,10 @@
 
 - [About](#about)
 - [Getting Started](#getting-started)
+  - [Demo](#demo)
   - [Prerequisites](#prerequisites)
   - [Usage standalone](#usage-standalone)
   - [Usage with starknet.js](#usage-with-starknetjs)
-  - [Demo](#demo)
 - [Supported Cairo Types](#supported-cairo-types)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
@@ -33,6 +33,12 @@ Abiwan will support multiple Cairo compiler versions, but not in parallel - diff
 | [2.2.0](https://www.npmjs.com/package/abi-wan-kanabi/v/2.2.0) | [Cairo v2.4.4](https://github.com/starkware-libs/cairo/releases/tag/v2.4.4)                                                                                  |
 
 ## Getting Started
+
+
+### Demo
+
+https://github.com/haroune-mohammedi/abi-wan-kanabi/assets/118889688/b7e20ab0-7314-402d-99fa-2888c20136c9
+
 
 ### Prerequisites
 
@@ -109,10 +115,6 @@ async function main() {
 }
 main().catch(console.error);
 ```
-
-### Demo
-
-<https://drive.google.com/file/d/1OpIgKlk-okvwJn-dkR2Pq2FvOVwlXTUJ/view?usp=sharing>
 
 ## Configuration
 
