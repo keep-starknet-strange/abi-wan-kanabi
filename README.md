@@ -31,6 +31,7 @@ Abiwan will support multiple Cairo compiler versions, but not in parallel - diff
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [1.0.3](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.3) | [Cairo v1.0.0](https://github.com/starkware-libs/cairo/releases/tag/v1.0.0) <br> [Cairo v1.1.0](https://github.com/starkware-libs/cairo/releases/tag/v1.1.0) |
 | [2.1.1](https://www.npmjs.com/package/abi-wan-kanabi/v/2.1.1) | [Cairo v2.3.0](https://github.com/starkware-libs/cairo/releases/tag/v2.3.0)                                                                                  |
+| [2.2.0](https://www.npmjs.com/package/abi-wan-kanabi/v/2.2.0) | [Cairo v2.4.4](https://github.com/starkware-libs/cairo/releases/tag/v2.4.4)                                                                                  |
 
 ## Getting Started
 
@@ -116,6 +117,22 @@ async function main() {
 main().catch(console.error);
 ```
 
+## Configuration
+
+Abiwan's types are customizable using [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html). Just extend the `Config` interface and override the types you want to change, see how `starknet.js` is doing it [here](https://github.com/starknet-io/starknet.js/blob/602a131d4abe05ada9c59aecf6bf165968c15c97/src/contract/interface.ts#L30:L43)
+
+```typescript
+declare module "abi-wan-kanabi" {
+  interface Config {
+    FeltType: string;
+    IntType: number;
+    // ...
+  }
+}
+```
+
+Check [`config.ts`](./config.ts) for all the available options and the their default values.
+
 ##  Supported Cairo Types
 
 Abiwan supports all of Cairo types, here's the mapping between Cairo types and Typescript types
@@ -130,6 +147,8 @@ Abiwan supports all of Cairo types, here's the mapping between Cairo types and T
 | `ContractAddress`  | `string`                     |
 | `EthAddress`       | `string`                     |
 | `ClassHash`        | `string`                     |
+| `bytes31`          | `string`                     |
+| `ByteArray`        | `string`                     |
 | `bool`             | `boolean`                    |
 | `()`               | `void`                       |
 
@@ -206,7 +225,7 @@ npm run generate -- --input test/example/target/dev/example_example_contract.con
 ```
 
 Contributions on Abiwan are most welcome!
-If you are willing to contribute, please get in touch with one of the project lead or via the repositories [Discussions](https://github.com/keep-starknet-strange/abi-wan-kanabi/discussions/categories/general)
+If you are willing to contribute, please get in touch with one of the project leads or via the repositories [Discussions](https://github.com/keep-starknet-strange/abi-wan-kanabi/discussions/categories/general)
 
 ## Acknowledgements
 

@@ -2,6 +2,8 @@ import { TypedContract } from '..'
 import {
   AbiTypeToPrimitiveType,
   CairoBigInt,
+  CairoByteArray,
+  CairoBytes31,
   CairoContractAddress,
   CairoEthAddress,
   CairoFelt,
@@ -127,6 +129,9 @@ test('FunctionArgs', () => {
   assertType<FunctionArgs<TAbi, 'fn_span'>>([
     { felt: bigIntValue, int128: bigIntValue, tuple: [intValue, intValue] },
   ])
+
+  assertType<FunctionArgs<TAbi, 'fn_bytes31'>>(stringValue)
+  assertType<FunctionArgs<TAbi, 'fn_byte_array'>>(stringValue)
 })
 
 test('FunctionArgs Errors', () => {
@@ -172,6 +177,10 @@ test('FunctionArgs Errors', () => {
   assertType<FunctionArgs<TAbi, 'fn_eth_address'>>(voidValue)
   // @ts-expect-error
   assertType<FunctionArgs<TAbi, 'fn_span'>>([bigIntValue])
+  // @ts-expect-error
+  assertType<FunctionArgs<TAbi, 'fn_bytes31'>>(voidValue)
+  // @ts-expect-error
+  assertType<FunctionArgs<TAbi, 'fn_byte_array'>>(intValue)
 })
 
 test('FunctionRet', () => {
@@ -272,6 +281,8 @@ test('ExtractAbiFunctionName', () => {
     | 'fn_nested_result'
     | 'fn_eth_address'
     | 'fn_span'
+    | 'fn_bytes31'
+    | 'fn_byte_array'
 
   expectTypeOf<ExtractAbiFunctionNames<TAbi>>().toEqualTypeOf<Expected>()
 })
@@ -292,6 +303,9 @@ test('AbiTypeToPrimitiveType', () => {
   assertType<AbiTypeToPrimitiveType<TAbi, CairoEthAddress>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(voidValue)
+
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoBytes31>>(stringValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoByteArray>>(stringValue)
 })
 
 test('AbiTypeToPrimitiveType Errors', () => {
@@ -309,6 +323,10 @@ test('AbiTypeToPrimitiveType Errors', () => {
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(bigIntValue)
   // @ts-expect-error CairoVoid should be void
   assertType<AbiTypeToPrimitiveType<TAbi, CairoVoid>>(intValue)
+  // @ts-expect-error CairoBytes31 should be string
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoBytes31>>(bigIntValue)
+  // @ts-expect-error CairoByteArray should be string
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoBytes31>>(voidValue)
 })
 
 test('StringToPrimitiveType', () => {
@@ -322,6 +340,8 @@ test('StringToPrimitiveType', () => {
   assertType<StringToPrimitiveType<TAbi, CairoEthAddress>>(stringValue)
   assertType<StringToPrimitiveType<TAbi, CairoFunction>>(intValue)
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(voidValue)
+  assertType<StringToPrimitiveType<TAbi, CairoBytes31>>(stringValue)
+  assertType<StringToPrimitiveType<TAbi, CairoByteArray>>(stringValue)
 })
 
 test('StringToPrimitiveType Errors', () => {
@@ -340,6 +360,10 @@ test('StringToPrimitiveType Errors', () => {
   assertType<StringToPrimitiveType<TAbi, CairoFunction>>(bigIntValue)
   // @ts-expect-error CairoVoid should be void
   assertType<StringToPrimitiveType<TAbi, CairoVoid>>(intValue)
+  // @ts-expect-error CairoBytes31 should be string
+  assertType<StringToPrimitiveType<TAbi, CairoBytes31>>(intValue)
+  // @ts-expect-error CairoByteArray should be string
+  assertType<StringToPrimitiveType<TAbi, CairoByteArray>>(bigIntValue)
 })
 
 test('ContractFunctions', () => {
