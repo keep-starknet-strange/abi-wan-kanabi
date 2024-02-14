@@ -97,5 +97,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noErrorTruncation": true,
-  }
+  },
+  "exclude": ["node_modules", "test", "dist"],
 }
