@@ -111,3 +111,6 @@ dist
 
 # local folder for tests
 local
+
+# VSCode settings
+.vscode/
