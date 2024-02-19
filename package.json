@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ivpavici/abi-wan-kanabi.git"
+    "url": "https://github.com/keep-starknet-strange/abi-wan-kanabi.git"
   },
   "keywords": ["abi", "cairo"],
   "author": "",
