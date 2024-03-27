@@ -6,7 +6,9 @@ type BigMBits = 64 | 128
 export type CairoInt = `${'core::integer::u'}${MBits}`
 export type CairoBigInt = `${'core::integer::u'}${BigMBits}`
 export type CairoU256 = 'core::integer::u256'
-export type CairoContractAddress = 'core::starknet::contract_address::ContractAddress'
+export type CairoU512 = 'core::integer::u512'
+export type CairoContractAddress =
+  'core::starknet::contract_address::ContractAddress'
 export type CairoEthAddress = 'core::starknet::eth_address::EthAddress'
 export type CairoClassHash = 'core::starknet::class_hash::ClassHash'
 export type CairoFunction = 'function'
@@ -14,6 +16,7 @@ export type CairoVoid = '()'
 export type CairoBool = 'core::bool'
 export type CairoBytes31 = 'core::bytes_31::bytes31'
 export type CairoByteArray = 'core::byte_array::ByteArray'
+export type CairoSecp256k1Point = 'core::starknet::secp256k1::Secp256k1Point'
 
 /// Implementation of tuples
 type MAX_TUPLE_SIZE = 20
@@ -37,6 +40,7 @@ type AbiType =
   | CairoInt
   | CairoBigInt
   | CairoU256
+  | CairoU512
   | CairoContractAddress
   | CairoEthAddress
   | CairoClassHash
@@ -44,10 +48,13 @@ type AbiType =
   | CairoVoid
   | CairoBytes31
   | CairoByteArray
+  | CairoSecp256k1Point
 
 // We have to use string to support nesting
 type CairoOptionGeneric<T extends string> = `core::option::Option::<${T}>`
-type CairoArrayGeneric<T extends string> = `core::array::Array::<${T}>` | `core::array::Span::<${T}>`
+type CairoArrayGeneric<T extends string> =
+  | `core::array::Array::<${T}>`
+  | `core::array::Span::<${T}>`
 type CairoResultGeneric<
   T extends string,
   E extends string,
@@ -265,6 +272,8 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
 } & {
   [_ in CairoU256]: ResolvedConfig['U256Type']
 } & {
+  [_ in CairoU512]: ResolvedConfig['U512Type']
+} & {
   [_ in CairoBigInt]: ResolvedConfig['BigIntType']
 } & {
   [_ in CairoContractAddress]: ResolvedConfig['AddressType']
@@ -278,8 +287,10 @@ type PrimitiveTypeLookup<TAbi extends Abi> = {
   [_ in CairoBool]: boolean
 } & {
   [_ in CairoBytes31]: ResolvedConfig['Bytes31Type']
-}& {
+} & {
   [_ in CairoByteArray]: ResolvedConfig['ByteArray']
+} & {
+  [_ in CairoSecp256k1Point]: ResolvedConfig['Secp256k1PointType']
 }
 
 export type AbiTypeToPrimitiveType<

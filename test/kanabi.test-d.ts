@@ -9,8 +9,10 @@ import {
   CairoFelt,
   CairoFunction,
   CairoInt,
+  CairoSecp256k1Point,
   CairoTuple,
   CairoU256,
+  CairoU512,
   CairoVoid,
   EventToPrimitiveType,
   ExtractAbiFunction,
@@ -41,10 +43,12 @@ test('Cairo Types', () => {
   assertType<CairoBigInt>('core::integer::u64')
   assertType<CairoBigInt>('core::integer::u128')
   assertType<CairoU256>('core::integer::u256')
+  assertType<CairoU512>('core::integer::u512')
   assertType<CairoContractAddress>(
     'core::starknet::contract_address::ContractAddress',
   )
   assertType<CairoEthAddress>('core::starknet::eth_address::EthAddress')
+  assertType<CairoSecp256k1Point>('core::starknet::secp256k1::Secp256k1Point')
   assertType<CairoFunction>('function')
   assertType<CairoVoid>('()')
   assertType<CairoTuple>('()')
@@ -299,6 +303,7 @@ test('AbiTypeToPrimitiveType', () => {
   assertType<AbiTypeToPrimitiveType<TAbi, CairoBigInt>>(bigIntValue)
 
   assertType<AbiTypeToPrimitiveType<TAbi, CairoU256>>(intValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoU512>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoContractAddress>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoEthAddress>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoFunction>>(intValue)
@@ -306,6 +311,7 @@ test('AbiTypeToPrimitiveType', () => {
 
   assertType<AbiTypeToPrimitiveType<TAbi, CairoBytes31>>(stringValue)
   assertType<AbiTypeToPrimitiveType<TAbi, CairoByteArray>>(stringValue)
+  assertType<AbiTypeToPrimitiveType<TAbi, CairoSecp256k1Point>>(stringValue)
 })
 
 test('AbiTypeToPrimitiveType Errors', () => {
