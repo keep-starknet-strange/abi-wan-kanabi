@@ -54,6 +54,13 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
     ? type
     : DefaultConfig['U256Type']
   /**
+   * TypeScript type to use for `u512` values
+   * @default string
+   */
+  U512Type: Config extends { U512Type: infer type }
+    ? type
+    : DefaultConfig['U512Type']
+  /**
    * TypeScript type to use for `u8`, `u16` and `u32` values
    * @default number
    */
@@ -83,9 +90,7 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
    * TypeScript type to use for enums
    * @default infer the types of the enum and return a union of objects
    */
-  Enum: Config extends { Enum: infer type }
-    ? type
-    : DefaultConfig['Enum']
+  Enum: Config extends { Enum: infer type } ? type : DefaultConfig['Enum']
   /**
    * TypeScript type to use for bytes31
    * @default string
@@ -100,7 +105,13 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
   ByteArray: Config extends { ByteArray: infer type }
     ? type
     : DefaultConfig['ByteArrayType']
-
+  /**
+   * TypeScript type to use for Secp256k1Point
+   * @default string
+   */
+  Secp256k1PointType: Config extends { ByteArray: infer type }
+    ? type
+    : DefaultConfig['Secp256k1PointType']
 
   /**
    * TypeScript type to use for Calldata used in function calls
@@ -153,6 +164,7 @@ export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
   FeltType: number | bigint | string
   BigIntType: number | bigint
   U256Type: number | bigint | U256
+  U512Type: string
   IntType: number | bigint
   Option: Option<OptionT>
   /** By default, abiwan will infer the types of the tuple element and return a TS tuple */
@@ -162,6 +174,7 @@ export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
   Enum: never
   Bytes31Type: string
   ByteArrayType: string
+  Secp256k1PointType: string
 
   Calldata: Calldata
   Call: Call
