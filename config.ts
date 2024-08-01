@@ -123,11 +123,12 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
 
   /**
    * TypeScript type to use for populate return values
-   * @default {
-      contractAddress: string
-      entrypoint: string
-      calldata?: Calldata
-    }
+   * @default 
+   * {
+   *   contractAddress: string
+   *   entrypoint: string
+   *   calldata?: Calldata
+   * }
    */
   Call: Config extends { Call: infer type }
     ? type
