@@ -15,9 +15,9 @@ export type Call = {
   calldata?: Calldata
 }
 
-export type Config<OptionT = any, OkT = any, ErrT = any> = {}
+export interface Config<OptionT = any, ResultT = any, ErrorT = any> {}
 
-export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
+export type ResolvedConfig<OptionT = any, ResultT = any, ErrorT = any> = {
   /**
    * TypeScript type to use for `ContractAddress` and `EthAddress` values
    * @default `0x${string}`
@@ -83,9 +83,9 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
    * TypeScript type to use for tuples `Result<T, E>` values
    * @default Ok<T> | Err<E>
    */
-  Result: Config<OptionT, OkT, ErrT> extends { Result: infer type }
+  Result: Config<OptionT, ResultT, ErrorT> extends { Result: infer type }
     ? type
-    : DefaultConfig<OptionT, OkT, ErrT>['Result']
+    : DefaultConfig<OptionT, ResultT, ErrorT>['Result']
   /**
    * TypeScript type to use for enums
    * @default infer the types of the enum and return a union of objects
@@ -123,11 +123,12 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
 
   /**
    * TypeScript type to use for populate return values
-   * @default {
-      contractAddress: string
-      entrypoint: string
-      calldata?: Calldata
-    }
+   * @default 
+   * {
+   *   contractAddress: string
+   *   entrypoint: string
+   *   calldata?: Calldata
+   * }
    */
   Call: Config extends { Call: infer type }
     ? type
@@ -158,7 +159,7 @@ export type ResolvedConfig<OptionT = any, OkT = any, ErrT = any> = {
     : DefaultConfig<OptionT>['InvokeFunctionResponse']
 }
 
-export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
+export type DefaultConfig<OptionT = any, ResultT = any, ErrorT = any> = {
   AddressType: string
   ClassHashType: string
   FeltType: number | bigint | string
@@ -169,7 +170,7 @@ export type DefaultConfig<OptionT = any, OkT = any, ErrT = any> = {
   Option: Option<OptionT>
   /** By default, abiwan will infer the types of the tuple element and return a TS tuple */
   Tuple: never
-  Result: Result<OkT, ErrT>
+  Result: Result<ResultT, ErrorT>
   /** By default, abiwan will infer the types of the enum and return a union of objects */
   Enum: never
   Bytes31Type: string
