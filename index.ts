@@ -15,9 +15,9 @@ export function call<
   TAbi extends Abi,
   TFunctionName extends ExtractAbiFunctionNames<TAbi>,
 >(
-  abi: TAbi,
-  f: TFunctionName,
-  args: FunctionArgs<TAbi, TFunctionName>,
+  _abi: TAbi,
+  _f: TFunctionName,
+  _args: FunctionArgs<TAbi, TFunctionName>,
 ): FunctionRet<TAbi, TFunctionName> {
   throw new Error('todo')
 }

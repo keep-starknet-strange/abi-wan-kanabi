@@ -263,7 +263,7 @@ export type ExtractAbiEvent<
 > = Extract<ExtractAbiEvents<TAbi>, { name: TEventName }>
 
 // Question: why do we need TAbi extends Abi here, it's not used ?
-type PrimitiveTypeLookup<TAbi extends Abi> = {
+type PrimitiveTypeLookup<_TAbi extends Abi> = {
   [_ in CairoFelt]: ResolvedConfig['FeltType']
 } & {
   [_ in CairoFunction]: number
