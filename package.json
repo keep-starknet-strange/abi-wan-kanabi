@@ -1,6 +1,6 @@
 {
   "name": "abi-wan-kanabi",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Abi parser for Cairo smart contracts, based on wagmi abitype",
   "main": "./dist/index.js",
   "bin": {
@@ -22,6 +22,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./kanabi": {
+      "types": "./dist/kanabi.d.ts",
+      "import": "./dist/kanabi.js",
+      "default": "./dist/kanabi.js"
     }
   },
   "repository": {
