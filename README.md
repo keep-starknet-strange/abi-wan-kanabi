@@ -27,8 +27,7 @@ Developers can now catch typing mistakes early, prior to executing the call on-c
 
 ### Cairo versions
 
-Abiwan will support multiple Cairo compiler versions, but not in parallel - different package versions will support different Cairo versions.
-
+Abiwan will support multiple Cairo compiler versions, with each Abiwan package version supporting a specific Cairo version. The compatibility table below shows which versions work together.
 | Abiwan                                                        | Cairo compiler                                                                                                                                               |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [1.0.3](https://www.npmjs.com/package/abi-wan-kanabi/v/1.0.3) | [Cairo v1.0.0](https://github.com/starkware-libs/cairo/releases/tag/v1.0.0) <br> [Cairo v1.1.0](https://github.com/starkware-libs/cairo/releases/tag/v1.1.0) |
